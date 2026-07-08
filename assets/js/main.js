@@ -74,4 +74,103 @@
       form.reset();
     });
   }
+
+  /* Hero Slideshow ----------------------------------------------------- */
+  var slides = document.querySelectorAll(".hero-slide");
+  var dots = document.querySelectorAll(".slider-dots .dot");
+  var prevBtn = document.querySelector(".slider-control.prev");
+  var nextBtn = document.querySelector(".slider-control.next");
+  var currentSlide = 0;
+  var slideTimer = null;
+  var slideInterval = 5500;
+
+  function showSlide(index) {
+    if (slides.length === 0) return;
+    var nextIndex = index;
+    if (index < 0) {
+      nextIndex = slides.length - 1;
+    } else if (index >= slides.length) {
+      nextIndex = 0;
+    }
+
+    slides[currentSlide].classList.remove("active");
+    slides[currentSlide].setAttribute("aria-hidden", "true");
+    if (dots.length > currentSlide) {
+      dots[currentSlide].classList.remove("active");
+      dots[currentSlide].setAttribute("aria-selected", "false");
+    }
+
+    slides[nextIndex].classList.add("active");
+    slides[nextIndex].removeAttribute("aria-hidden");
+    if (dots.length > nextIndex) {
+      dots[nextIndex].classList.add("active");
+      dots[nextIndex].setAttribute("aria-selected", "true");
+    }
+
+    currentSlide = nextIndex;
+  }
+
+  function nextSlide() {
+    showSlide(currentSlide + 1);
+  }
+
+  function prevSlide() {
+    showSlide(currentSlide - 1);
+  }
+
+  function startAutoplay() {
+    stopAutoplay();
+    if (slides.length > 1) {
+      slideTimer = setInterval(nextSlide, slideInterval);
+    }
+  }
+
+  function stopAutoplay() {
+    if (slideTimer) {
+      clearInterval(slideTimer);
+      slideTimer = null;
+    }
+  }
+
+  if (slides.length > 0) {
+    if (prevBtn) {
+      prevBtn.addEventListener("click", function () {
+        prevSlide();
+        startAutoplay();
+      });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener("click", function () {
+        nextSlide();
+        startAutoplay();
+      });
+    }
+
+    dots.forEach(function (dot, i) {
+      dot.addEventListener("click", function () {
+        showSlide(i);
+        startAutoplay();
+      });
+    });
+
+    var heroSection = document.querySelector(".hero");
+    if (heroSection) {
+      heroSection.addEventListener("mouseenter", stopAutoplay);
+      heroSection.addEventListener("mouseleave", startAutoplay);
+      heroSection.addEventListener("focusin", stopAutoplay);
+      heroSection.addEventListener("focusout", startAutoplay);
+
+      heroSection.addEventListener("keydown", function (e) {
+        if (e.key === "ArrowLeft") {
+          prevSlide();
+          startAutoplay();
+        } else if (e.key === "ArrowRight") {
+          nextSlide();
+          startAutoplay();
+        }
+      });
+    }
+
+    startAutoplay();
+  }
 })();

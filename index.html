@@ -117,9 +117,6 @@
           <li><a href="insurance.html">Insurance</a></li>
           <li><a href="patients.html">Patients</a></li>
           <li><a href="contact.html">Contact</a></li>
-          <li class="mobile-cta">
-            <a class="btn btn--primary" href="contact.html">Book Appointment</a>
-          </li>
         </ul>
         <div class="nav-actions">
           <a class="btn btn--primary" href="contact.html">Book Appointment</a>
@@ -128,32 +125,122 @@
     </header>
 
     <main id="main">
-      <!-- ============================ HERO ============================== -->
-      <section class="hero text-center" aria-labelledby="hero-title">
-        <div class="hero__bg">
-          <img
-            src="images/hero-hospitalaerialviewtwo.jpeg"
-            alt="Aerial view of Alpha Hill Medical Centre in Mosoriot, Nandi County"
-          />
+      <!-- ============================ HERO SLIDER ============================== -->
+      <section class="hero text-center" aria-label="Alpha Hill Medical Centre Welcome Slideshow">
+        <div class="hero-slider">
+          
+          <!-- Slide 1: Welcome & Trust -->
+          <article class="hero-slide active" aria-roledescription="slide" aria-label="1 of 4: Welcome & Trust">
+            <div class="hero__bg">
+              <img
+                src="images/hero-hospitalaerialviewtwo.jpeg"
+                alt="Exterior front view of Alpha Hill Medical Centre along Mosoriot – Kabiyet Road"
+              />
+            </div>
+            <div class="container hero__inner">
+              <span class="tag">Inspiring Better Healthcare</span>
+              <h1 id="hero-title" class="hero-slide__title">
+                Compassionate, Comprehensive Healthcare in Nandi County
+              </h1>
+              <p class="hero-slide__text">
+                Delivering advanced medical services, 24-hour emergency response, and professional treatment close to home.
+              </p>
+              <div class="btn-row">
+                <a class="btn btn--primary" href="contact.html">Book Appointment</a>
+                <a class="btn btn--ghost-light" href="services.html">Explore Services</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 2: Critical Care & Specialized Surgery -->
+          <article class="hero-slide" aria-roledescription="slide" aria-label="2 of 4: Critical Care & Surgery" aria-hidden="true">
+            <div class="hero__bg">
+              <img
+                src="images/theatre room.jpeg"
+                alt="Modern, fully equipped operating theatre room at Alpha Hill"
+              />
+            </div>
+            <div class="container hero__inner">
+              <span class="tag">ICU & Advanced Surgery</span>
+              <h2 class="hero-slide__title">
+                Advanced Life Support & Specialized Surgery
+              </h2>
+              <p class="hero-slide__text">
+                Equipped with state-of-the-art ICU facilities, modern surgical suites, and dedicated specialists ready for critical care round the clock.
+              </p>
+              <div class="btn-row">
+                <a class="btn btn--primary" href="services.html#icu">Our Specialties</a>
+                <a class="btn btn--ghost-light" href="about.html">Meet Our Team</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 3: Maternity & Newborn Care -->
+          <article class="hero-slide" aria-roledescription="slide" aria-label="3 of 4: Maternity Care" aria-hidden="true">
+            <div class="hero__bg">
+              <img
+                src="images/maternity wards.jpeg"
+                alt="Comfortable maternity ward beds ready for patients"
+              />
+            </div>
+            <div class="container hero__inner">
+              <span class="tag">Maternity & Family Care</span>
+              <h2 class="hero-slide__title">
+                Safe Motherhood & Deliveries
+              </h2>
+              <p class="hero-slide__text">
+                Dedicated prenatal services, safe deliveries (both normal and caesarean section), and comfortable wards to care for mother and baby.
+              </p>
+              <div class="btn-row">
+                <a class="btn btn--primary" href="services.html#maternity">Maternity Services</a>
+                <a class="btn btn--ghost-light" href="contact.html">Get in Touch</a>
+              </div>
+            </div>
+          </article>
+
+          <!-- Slide 4: Advanced Diagnostics & Lab -->
+          <article class="hero-slide" aria-roledescription="slide" aria-label="4 of 4: Diagnostics" aria-hidden="true">
+            <div class="hero__bg">
+              <img
+                src="images/hospital equipment.jpeg"
+                alt="Advanced diagnostic scanning equipment for CT scan and digital X-ray"
+              />
+            </div>
+            <div class="container hero__inner">
+              <span class="tag">Diagnostics & Imaging</span>
+              <h2 class="hero-slide__title">
+                Accurate CT Scan & 24h Laboratory
+              </h2>
+              <p class="hero-slide__text">
+                Rest easy with our advanced CT Scan, digital X-Ray, ultrasound, optometry, and a 24-hour outpatient laboratory and pharmacy.
+              </p>
+              <div class="btn-row">
+                <a class="btn btn--primary" href="services.html#ct-scan">Our Diagnostics</a>
+                <a class="btn btn--ghost-light" href="insurance.html">Accepted Insurances</a>
+              </div>
+            </div>
+          </article>
+
         </div>
-        <div class="container hero__inner">
-          <span class="tag">Inspiring Better Healthcare</span>
-          <h1 id="hero-title">
-            Compassionate, Comprehensive Care for Nandi County
-          </h1>
-          <p>
-            Comprehensive, affordable, high-quality healthcare in the heart of
-            Nandi County — delivered with professionalism, kindness, respect,
-            honesty and integrity.
-          </p>
-          <div class="btn-row">
-            <a class="btn btn--primary" href="contact.html"
-              >Book an Appointment</a
-            >
-            <a class="btn btn--ghost-light" href="services.html"
-              >Explore Our Services</a
-            >
-          </div>
+
+        <!-- Slider Controls -->
+        <button class="slider-control prev" aria-label="Previous slide" type="button">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+          </svg>
+        </button>
+        <button class="slider-control next" aria-label="Next slide" type="button">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+          </svg>
+        </button>
+
+        <!-- Slider Dots -->
+        <div class="slider-dots" role="tablist" aria-label="Slide Selection">
+          <button class="dot active" role="tab" aria-selected="true" aria-label="Go to Slide 1" type="button"></button>
+          <button class="dot" role="tab" aria-selected="false" aria-label="Go to Slide 2" type="button"></button>
+          <button class="dot" role="tab" aria-selected="false" aria-label="Go to Slide 3" type="button"></button>
+          <button class="dot" role="tab" aria-selected="false" aria-label="Go to Slide 4" type="button"></button>
         </div>
       </section>
 
@@ -162,8 +249,8 @@
         <div class="container split">
           <div class="split__media reveal">
             <img
-              src="images/alphahilllobby.jpeg"
-              alt="The bright, modern reception lobby at Alpha Hill Medical Centre"
+              src="images/reception area hospital.jpeg"
+              alt="Patients being welcomed at the Alpha Hill Medical Centre reception desk"
             />
             <div class="split__badge">
               <strong>24/7</strong>
@@ -565,36 +652,14 @@
               line for immediate assistance and guidance.
             </p>
           </div>
-          <div
-            style="
-              text-align: center;
-              background: rgba(255, 255, 255, 0.06);
-              border: 1px solid rgba(255, 255, 255, 0.12);
-              border-radius: var(--radius);
-              padding: 2rem;
-            "
-          >
-            <p class="eyebrow" style="color: #fff; margin-bottom: 0.5rem">
+          <div class="emergency-card">
+            <p class="eyebrow emergency-card__title">
               24/7 Emergency Line
             </p>
-            <a
-              href="tel:+254722865459"
-              style="
-                display: block;
-                font-family: var(--font-head);
-                font-weight: 800;
-                font-size: clamp(1.6rem, 5vw, 2.4rem);
-                color: #fff;
-                text-decoration: none;
-                line-height: 1.2;
-              "
-              >+254 722 865 459</a
-            >
-            <p style="color: var(--on-navy-dim); margin: 0.75rem 0 0">
+            <a href="tel:+254722865459" class="emergency-card__phone">+254 722 865 459</a>
+            <p class="emergency-card__alt">
               Alternative line:
-              <a href="tel:+254722419080" style="color: #fff"
-                >+254 722 419 080</a
-              >
+              <a href="tel:+254722419080">+254 722 419 080</a>
             </p>
           </div>
         </div>
@@ -609,11 +674,11 @@
             </h2>
           </div>
           <div class="logo-strip">
-            <span>SHA</span>
-            <span>AAR Insurance</span>
-            <span>MUA</span>
-            <span>M-TIBA</span>
-            <span>First Assurance</span>
+            <img src="images/insurance/sha.png" alt="SHA - Social Health Authority logo" />
+            <img src="images/insurance/aar.png" alt="AAR Insurance logo" />
+            <img src="images/insurance/mua.png" alt="MUA Insurance logo" />
+            <img src="images/insurance/mtiba.png" alt="M-TIBA logo" />
+            <img src="images/insurance/firstassurance.jpg" alt="First Assurance logo" />
           </div>
           <p class="text-center mt-2">
             <a class="arrow-link" href="insurance.html"
