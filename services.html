@@ -8,16 +8,92 @@
       name="description"
       content="Explore Alpha Hill Medical Centre's services: ICU, maternity, major & minor surgery, CT scan, X-ray, ultrasound, endoscopy, dental, eyecare, dialysis, physiotherapy, 24-hour laboratory & pharmacy, inpatient & outpatient care."
     />
-    <link rel="canonical" href="https://www.alphahillmedical.or.ke/services.html" />
+    <link rel="canonical" href="https://alphahillmedical.co.ke/services.html" />
     <meta name="theme-color" content="#001F5D" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Alpha Hill Medical Centre" />
     <meta property="og:title" content="Our Medical Services | Alpha Hill Medical Centre" />
     <meta property="og:description" content="A full continuum of care under one roof, supported by modern equipment and dedicated specialists." />
-    <meta property="og:image" content="images/theatre lights.jpeg" />
+    <meta property="og:image" content="https://alphahillmedical.co.ke/images/theatre lights.jpeg" />
+    <meta property="og:url" content="https://alphahillmedical.co.ke/services.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="icon" type="image/png" href="alphahillmedicallogo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/styles.css" />
+
+    <!-- Structured data for SEO / AI answer engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": ["Hospital", "MedicalClinic"],
+            "@id": "https://alphahillmedical.co.ke/#organization",
+            "name": "Alpha Hill Medical Centre",
+            "url": "https://alphahillmedical.co.ke/",
+            "logo": "https://alphahillmedical.co.ke/alphahillmedicallogo.png",
+            "telephone": "+254722865459",
+            "email": "alphahillmedical@gmail.com",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Along Mosoriot – Kabiyet Road",
+              "addressLocality": "Mosoriot",
+              "addressRegion": "Nandi County",
+              "postalCode": "30100",
+              "addressCountry": "KE"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 0.3211582,
+              "longitude": 35.1600144
+            },
+            "openingHours": "Mo-Su 00:00-23:59"
+          },
+          {
+            "@type": "MedicalWebPage",
+            "@id": "https://alphahillmedical.co.ke/services.html#webpage",
+            "url": "https://alphahillmedical.co.ke/services.html",
+            "name": "Our Medical Services | Alpha Hill Medical Centre",
+            "description": "Explore Alpha Hill Medical Centre's services: ICU, maternity, major & minor surgery, CT scan, X-ray, ultrasound, endoscopy, dental, eyecare, dialysis, physiotherapy, 24-hour laboratory & pharmacy, inpatient & outpatient care.",
+            "about": { "@id": "https://alphahillmedical.co.ke/#organization" },
+            "inLanguage": "en",
+            "mainEntity": { "@id": "https://alphahillmedical.co.ke/services.html#servicelist" }
+          },
+          {
+            "@type": "ItemList",
+            "@id": "https://alphahillmedical.co.ke/services.html#servicelist",
+            "name": "Medical services at Alpha Hill Medical Centre",
+            "numberOfItems": 14,
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "item": { "@type": "MedicalProcedure", "name": "Intensive Care (ICU)", "url": "https://alphahillmedical.co.ke/services.html#icu" } },
+              { "@type": "ListItem", "position": 2, "item": { "@type": "MedicalProcedure", "name": "Maternity Services", "url": "https://alphahillmedical.co.ke/services.html#maternity" } },
+              { "@type": "ListItem", "position": 3, "item": { "@type": "MedicalProcedure", "name": "Major & Minor Surgeries", "url": "https://alphahillmedical.co.ke/services.html#surgery" } },
+              { "@type": "ListItem", "position": 4, "item": { "@type": "MedicalTest", "name": "CT Scan Services", "url": "https://alphahillmedical.co.ke/services.html#ct-scan" } },
+              { "@type": "ListItem", "position": 5, "item": { "@type": "MedicalTest", "name": "X-Ray Services", "url": "https://alphahillmedical.co.ke/services.html#x-ray" } },
+              { "@type": "ListItem", "position": 6, "item": { "@type": "MedicalTest", "name": "Ultrasound Services", "url": "https://alphahillmedical.co.ke/services.html#ultrasound" } },
+              { "@type": "ListItem", "position": 7, "item": { "@type": "MedicalProcedure", "name": "Endoscopy & Colonoscopy", "url": "https://alphahillmedical.co.ke/services.html#endoscopy" } },
+              { "@type": "ListItem", "position": 8, "item": { "@type": "MedicalProcedure", "name": "Dental Services", "url": "https://alphahillmedical.co.ke/services.html#dental" } },
+              { "@type": "ListItem", "position": 9, "item": { "@type": "MedicalProcedure", "name": "Eyecare / Optometry", "url": "https://alphahillmedical.co.ke/services.html#eyecare" } },
+              { "@type": "ListItem", "position": 10, "item": { "@type": "MedicalProcedure", "name": "Dialysis Services", "url": "https://alphahillmedical.co.ke/services.html#dialysis" } },
+              { "@type": "ListItem", "position": 11, "item": { "@type": "MedicalProcedure", "name": "Physiotherapy", "url": "https://alphahillmedical.co.ke/services.html#physiotherapy" } },
+              { "@type": "ListItem", "position": 12, "item": { "@type": "MedicalTest", "name": "24-Hour Laboratory", "url": "https://alphahillmedical.co.ke/services.html#laboratory" } },
+              { "@type": "ListItem", "position": 13, "item": { "@type": "MedicalProcedure", "name": "24-Hour Pharmacy", "url": "https://alphahillmedical.co.ke/services.html#pharmacy" } },
+              { "@type": "ListItem", "position": 14, "item": { "@type": "MedicalProcedure", "name": "Inpatient & Outpatient Care", "url": "https://alphahillmedical.co.ke/services.html#inpatient-outpatient" } }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://alphahillmedical.co.ke/" },
+              { "@type": "ListItem", "position": 2, "name": "Our Services", "item": "https://alphahillmedical.co.ke/services.html" }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -44,6 +120,7 @@
           <li><a href="services.html" aria-current="page">Services</a></li>
           <li><a href="insurance.html">Insurance</a></li>
           <li><a href="patients.html">Patients</a></li>
+          <li><a href="reviews.html">Reviews</a></li>
           <li><a href="contact.html">Contact</a></li>
           
         </ul>
@@ -354,6 +431,7 @@
             <li><a href="services.html">Our Services</a></li>
             <li><a href="insurance.html">Insurance Partners</a></li>
             <li><a href="patients.html">Patient Information</a></li>
+            <li><a href="reviews.html">Reviews &amp; Feedback</a></li>
             <li><a href="contact.html">Contact Us</a></li>
           </ul>
         </div>

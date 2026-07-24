@@ -75,6 +75,34 @@
     });
   }
 
+  /* Review form (front-end only demo) ----------------------------------- */
+  var reviewForm = document.getElementById("review-form");
+  if (reviewForm) {
+    reviewForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var status = document.getElementById("review-status");
+      var rating = reviewForm.querySelector("input[name='rating']:checked");
+      var name = (reviewForm.querySelector("#rev-name") || {}).value || "";
+      if (!rating) {
+        if (status) {
+          status.textContent = "Please select a star rating before submitting.";
+          status.className = "form-status";
+          status.style.color = "var(--red)";
+        }
+        return;
+      }
+      if (status) {
+        status.style.color = "";
+        status.textContent =
+          "Thank you" +
+          (name ? ", " + name.split(" ")[0] : "") +
+          "! Your review has been received. We truly appreciate your feedback — it helps us keep improving our care.";
+        status.className = "form-status ok";
+      }
+      reviewForm.reset();
+    });
+  }
+
   /* Hero Slideshow ----------------------------------------------------- */
   var slides = document.querySelectorAll(".hero-slide");
   var dots = document.querySelectorAll(".slider-dots .dot");

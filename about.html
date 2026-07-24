@@ -8,16 +8,84 @@
       name="description"
       content="Learn about Alpha Hill Medical Centre — our mission, vision, core values and accreditations (SHA, KMPDC, NCK, PPB). Pioneering affordable, compassionate healthcare in Nandi County, Kenya."
     />
-    <link rel="canonical" href="https://www.alphahillmedical.or.ke/about.html" />
+    <link rel="canonical" href="https://alphahillmedical.co.ke/about.html" />
     <meta name="theme-color" content="#001F5D" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Alpha Hill Medical Centre" />
     <meta property="og:title" content="About Alpha Hill Medical Centre" />
     <meta property="og:description" content="Our mission, vision, values and accreditations." />
-    <meta property="og:image" content="images/alphahillallstaff.jpeg" />
+    <meta property="og:image" content="https://alphahillmedical.co.ke/images/alphahillallstaff.jpeg" />
+    <meta property="og:url" content="https://alphahillmedical.co.ke/about.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="icon" type="image/png" href="alphahillmedicallogo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/styles.css" />
+
+    <!-- Structured data for SEO / AI answer engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": ["Hospital", "MedicalClinic"],
+            "@id": "https://alphahillmedical.co.ke/#organization",
+            "name": "Alpha Hill Medical Centre",
+            "alternateName": "Alpha Hill Hospital",
+            "slogan": "Inspiring Better Healthcare",
+            "url": "https://alphahillmedical.co.ke/",
+            "logo": "https://alphahillmedical.co.ke/alphahillmedicallogo.png",
+            "image": "https://alphahillmedical.co.ke/images/alphahillallstaff.jpeg",
+            "description": "Alpha Hill Medical Centre is a pioneering, accredited hospital in Mosoriot, Nandi County, Kenya, delivering comprehensive, integrated and affordable healthcare with kindness and integrity.",
+            "email": "alphahillmedical@gmail.com",
+            "telephone": "+254722865459",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Along Mosoriot – Kabiyet Road",
+              "addressLocality": "Mosoriot",
+              "addressRegion": "Nandi County",
+              "postalCode": "30100",
+              "addressCountry": "KE"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 0.3211582,
+              "longitude": 35.1600144
+            },
+            "openingHours": "Mo-Su 00:00-23:59",
+            "areaServed": [
+              { "@type": "AdministrativeArea", "name": "Nandi County" },
+              { "@type": "Country", "name": "Kenya" }
+            ],
+            "hasCredential": [
+              { "@type": "EducationalOccupationalCredential", "credentialCategory": "Accreditation", "name": "SHA — Social Health Authority" },
+              { "@type": "EducationalOccupationalCredential", "credentialCategory": "Accreditation", "name": "KMPDC — Kenya Medical Practitioners and Dentists Council" },
+              { "@type": "EducationalOccupationalCredential", "credentialCategory": "Accreditation", "name": "NCK — Nursing Council of Kenya" },
+              { "@type": "EducationalOccupationalCredential", "credentialCategory": "Accreditation", "name": "PPB — Pharmacy and Poisons Board" }
+            ]
+          },
+          {
+            "@type": "AboutPage",
+            "@id": "https://alphahillmedical.co.ke/about.html#webpage",
+            "url": "https://alphahillmedical.co.ke/about.html",
+            "name": "About Us | Alpha Hill Medical Centre",
+            "description": "Learn about Alpha Hill Medical Centre — our mission, vision, core values and accreditations (SHA, KMPDC, NCK, PPB). Pioneering affordable, compassionate healthcare in Nandi County, Kenya.",
+            "about": { "@id": "https://alphahillmedical.co.ke/#organization" },
+            "mainEntity": { "@id": "https://alphahillmedical.co.ke/#organization" },
+            "inLanguage": "en"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://alphahillmedical.co.ke/" },
+              { "@type": "ListItem", "position": 2, "name": "About Us", "item": "https://alphahillmedical.co.ke/about.html" }
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to main content</a>
@@ -44,6 +112,7 @@
           <li><a href="services.html">Services</a></li>
           <li><a href="insurance.html">Insurance</a></li>
           <li><a href="patients.html">Patients</a></li>
+          <li><a href="reviews.html">Reviews</a></li>
           <li><a href="contact.html">Contact</a></li>
           
         </ul>
@@ -196,6 +265,7 @@
             <li><a href="services.html">Our Services</a></li>
             <li><a href="insurance.html">Insurance Partners</a></li>
             <li><a href="patients.html">Patient Information</a></li>
+            <li><a href="reviews.html">Reviews &amp; Feedback</a></li>
             <li><a href="contact.html">Contact Us</a></li>
           </ul>
         </div>

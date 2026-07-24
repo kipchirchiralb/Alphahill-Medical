@@ -8,27 +8,71 @@
       name="description"
       content="Patient information for Alpha Hill Medical Centre: what to bring on your visit, visiting details and answers to frequently asked questions about opening hours, referrals, SHA and payment."
     />
-    <link rel="canonical" href="https://www.alphahillmedical.or.ke/patients.html" />
+    <link rel="canonical" href="https://alphahillmedical.co.ke/patients.html" />
     <meta name="theme-color" content="#001F5D" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Alpha Hill Medical Centre" />
     <meta property="og:title" content="Patient Information & FAQ | Alpha Hill Medical Centre" />
     <meta property="og:description" content="What to bring, visiting details and frequently asked questions." />
+    <meta property="og:image" content="https://alphahillmedical.co.ke/images/ward room.jpeg" />
+    <meta property="og:url" content="https://alphahillmedical.co.ke/patients.html" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="icon" type="image/png" href="alphahillmedicallogo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="assets/css/styles.css" />
 
-    <!-- FAQ structured data for SEO / AI answer engines -->
+    <!-- FAQ + page structured data for SEO / AI answer engines -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "FAQPage",
-      "mainEntity": [
-        { "@type": "Question", "name": "Are you open on weekends and holidays?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Our emergency, laboratory and pharmacy services operate 24 hours a day, every day of the year." } },
-        { "@type": "Question", "name": "Do I need a referral to see a specialist?", "acceptedAnswer": { "@type": "Answer", "text": "No referral is required for outpatient consultations. Walk in or call ahead to book." } },
-        { "@type": "Question", "name": "Do you accept SHA?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — we are SHA-accredited, alongside AAR, MUA, M-TIBA and First Assurance." } },
-        { "@type": "Question", "name": "How do I pay if I don't have insurance?", "acceptedAnswer": { "@type": "Answer", "text": "We offer affordable cash rates for all services, in line with our mission of accessible care." } },
-        { "@type": "Question", "name": "Where are you located?", "acceptedAnswer": { "@type": "Answer", "text": "Along Mosoriot – Kabiyet Road, Mosoriot, Nandi County. See our Contact page for directions." } }
+      "@graph": [
+        {
+          "@type": ["Hospital", "MedicalClinic"],
+          "@id": "https://alphahillmedical.co.ke/#organization",
+          "name": "Alpha Hill Medical Centre",
+          "url": "https://alphahillmedical.co.ke/",
+          "logo": "https://alphahillmedical.co.ke/alphahillmedicallogo.png",
+          "telephone": "+254722865459",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Along Mosoriot – Kabiyet Road",
+            "addressLocality": "Mosoriot",
+            "addressRegion": "Nandi County",
+            "postalCode": "30100",
+            "addressCountry": "KE"
+          },
+          "geo": {
+            "@type": "GeoCoordinates",
+            "latitude": 0.3211582,
+            "longitude": 35.1600144
+          },
+          "openingHours": "Mo-Su 00:00-23:59"
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://alphahillmedical.co.ke/patients.html#webpage",
+          "url": "https://alphahillmedical.co.ke/patients.html",
+          "name": "Patient Information & FAQ | Alpha Hill Medical Centre",
+          "about": { "@id": "https://alphahillmedical.co.ke/#organization" },
+          "inLanguage": "en",
+          "mainEntity": [
+            { "@type": "Question", "name": "Are you open on weekends and holidays?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Our emergency, laboratory and pharmacy services operate 24 hours a day, every day of the year." } },
+            { "@type": "Question", "name": "Do I need a referral to see a specialist?", "acceptedAnswer": { "@type": "Answer", "text": "No referral is required for outpatient consultations. Walk in or call ahead to book." } },
+            { "@type": "Question", "name": "Do you accept SHA?", "acceptedAnswer": { "@type": "Answer", "text": "Yes — we are SHA-accredited, alongside AAR, MUA, M-TIBA and First Assurance." } },
+            { "@type": "Question", "name": "How do I pay if I don't have insurance?", "acceptedAnswer": { "@type": "Answer", "text": "We offer affordable cash rates for all services, in line with our mission of accessible care." } },
+            { "@type": "Question", "name": "Where are you located?", "acceptedAnswer": { "@type": "Answer", "text": "Along Mosoriot – Kabiyet Road, Mosoriot, Nandi County. See our Contact page for directions." } }
+          ]
+        },
+        {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://alphahillmedical.co.ke/" },
+            { "@type": "ListItem", "position": 2, "name": "Patient Information", "item": "https://alphahillmedical.co.ke/patients.html" }
+          ]
+        }
       ]
     }
     </script>
@@ -58,6 +102,7 @@
           <li><a href="services.html">Services</a></li>
           <li><a href="insurance.html">Insurance</a></li>
           <li><a href="patients.html" aria-current="page">Patients</a></li>
+          <li><a href="reviews.html">Reviews</a></li>
           <li><a href="contact.html">Contact</a></li>
           
         </ul>
@@ -159,6 +204,7 @@
             <li><a href="services.html">Our Services</a></li>
             <li><a href="insurance.html">Insurance Partners</a></li>
             <li><a href="patients.html">Patient Information</a></li>
+            <li><a href="reviews.html">Reviews &amp; Feedback</a></li>
             <li><a href="contact.html">Contact Us</a></li>
           </ul>
         </div>

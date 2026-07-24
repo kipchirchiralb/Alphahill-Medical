@@ -132,7 +132,7 @@ white as the default page background, navy only for the header/footer/banner blo
   resets. Wire the `#enquiry-form` handler in `assets/js/main.js` to your backend, a form
   service (e.g. Formspree) or an email endpoint to receive real submissions.
 - Update the domain in the canonical/Open Graph tags and `sitemap.xml` if the live site
-  uses a different URL than `https://www.alphahillmedical.or.ke/`.
+  uses a different URL than `https://alphahillmedical.co.ke/`.
 - Image filenames contain spaces; these are referenced as-is in the HTML and are handled
   correctly by browsers. Renaming them to hyphenated slugs is optional but tidier.
 

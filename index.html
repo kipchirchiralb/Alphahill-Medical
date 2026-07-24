@@ -14,7 +14,7 @@
       name="keywords"
       content="hospital Nandi County, medical centre Mosoriot, ICU Kenya, maternity Nandi, CT scan, dialysis, SHA hospital, Alpha Hill Medical"
     />
-    <link rel="canonical" href="https://www.alphahillmedical.or.ke/" />
+    <link rel="canonical" href="https://alphahillmedical.co.ke/" />
     <meta name="theme-color" content="#001F5D" />
 
     <!-- Open Graph / social -->
@@ -30,10 +30,30 @@
     />
     <meta
       property="og:image"
-      content="images/hero-hospitalaerialviewtwo.jpeg"
+      content="https://alphahillmedical.co.ke/images/hero-hospitalaerialviewtwo.jpeg"
     />
-    <meta property="og:url" content="https://www.alphahillmedical.or.ke/" />
+    <meta property="og:url" content="https://alphahillmedical.co.ke/" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Alpha Hill Medical Centre | Inspiring Better Healthcare"
+    />
+    <meta
+      name="twitter:description"
+      content="Comprehensive, affordable, high-quality healthcare in the heart of Nandi County — open 24/7."
+    />
+    <meta
+      name="twitter:image"
+      content="https://alphahillmedical.co.ke/images/hero-hospitalaerialviewtwo.jpeg"
+    />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="author" content="Alpha Hill Medical Centre" />
+
+    <!-- Geo targeting (local SEO) -->
+    <meta name="geo.region" content="KE-30" />
+    <meta name="geo.placename" content="Mosoriot, Nandi County" />
+    <meta name="geo.position" content="0.3211582;35.1600144" />
+    <meta name="ICBM" content="0.3211582, 35.1600144" />
 
     <link rel="icon" type="image/png" href="alphahillmedicallogo.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -48,32 +68,169 @@
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
-        "@type": "Hospital",
-        "name": "Alpha Hill Medical Centre",
-        "slogan": "Inspiring Better Healthcare",
-        "url": "https://www.alphahillmedical.or.ke/",
-        "logo": "https://www.alphahillmedical.or.ke/alphahillmedicallogo.png",
-        "image": "https://www.alphahillmedical.or.ke/images/hero-hospitalaerialviewtwo.jpeg",
-        "email": "alphahillmedical@gmail.com",
-        "telephone": "+254722865459",
-        "medicalSpecialty": [
-          "Intensive Care",
-          "Obstetric",
-          "Surgical",
-          "Radiography",
-          "Dentistry",
-          "Nephrology",
-          "Physiotherapy"
-        ],
-        "openingHours": "Mo-Su 00:00-24:00",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Along Mosoriot – Kabiyet Road",
-          "addressLocality": "Mosoriot",
-          "addressRegion": "Nandi County",
-          "postalCode": "30100",
-          "addressCountry": "KE"
-        }
+        "@graph": [
+          {
+            "@type": ["Hospital", "MedicalClinic"],
+            "@id": "https://alphahillmedical.co.ke/#organization",
+            "name": "Alpha Hill Medical Centre",
+            "alternateName": "Alpha Hill Hospital",
+            "slogan": "Inspiring Better Healthcare",
+            "url": "https://alphahillmedical.co.ke/",
+            "logo": {
+              "@type": "ImageObject",
+              "@id": "https://alphahillmedical.co.ke/#logo",
+              "url": "https://alphahillmedical.co.ke/alphahillmedicallogo.png",
+              "caption": "Alpha Hill Medical Centre"
+            },
+            "image": [
+              "https://alphahillmedical.co.ke/images/hero-hospitalaerialviewtwo.jpeg",
+              "https://alphahillmedical.co.ke/images/hospitalaerialview.jpeg"
+            ],
+            "description": "Alpha Hill Medical Centre is a modern, accredited 24-hour hospital in Mosoriot, Nandi County, Kenya, offering comprehensive and affordable healthcare — including ICU, maternity, surgery, CT scan, dialysis, dental, eyecare, physiotherapy and a 24-hour laboratory and pharmacy.",
+            "email": "alphahillmedical@gmail.com",
+            "telephone": "+254722865459",
+            "priceRange": "$$",
+            "currenciesAccepted": "KES",
+            "paymentAccepted": "Cash, SHA, AAR, MUA, M-TIBA, First Assurance",
+            "isAcceptingNewPatients": true,
+            "availableLanguage": [
+              { "@type": "Language", "name": "English" },
+              { "@type": "Language", "name": "Swahili" }
+            ],
+            "medicalSpecialty": [
+              "Emergency",
+              "Surgical",
+              "Obstetric",
+              "Midwifery",
+              "Radiography",
+              "Dentistry",
+              "Optometric",
+              "Gastroenterologic",
+              "PhysicalTherapy",
+              "LaboratoryScience",
+              "PharmacySpecialty",
+              "PrimaryCare"
+            ],
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Along Mosoriot – Kabiyet Road",
+              "addressLocality": "Mosoriot",
+              "addressRegion": "Nandi County",
+              "postalCode": "30100",
+              "postOfficeBoxNumber": "8620",
+              "addressCountry": "KE"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 0.3211582,
+              "longitude": 35.1600144
+            },
+            "hasMap": "https://www.google.com/maps/place/Alpha+Hill+Medical+Centre",
+            "openingHours": "Mo-Su 00:00-23:59",
+            "openingHoursSpecification": [
+              {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": [
+                  "Monday",
+                  "Tuesday",
+                  "Wednesday",
+                  "Thursday",
+                  "Friday",
+                  "Saturday",
+                  "Sunday"
+                ],
+                "opens": "00:00",
+                "closes": "23:59"
+              }
+            ],
+            "areaServed": [
+              { "@type": "AdministrativeArea", "name": "Nandi County" },
+              { "@type": "Country", "name": "Kenya" }
+            ],
+            "contactPoint": [
+              {
+                "@type": "ContactPoint",
+                "telephone": "+254722865459",
+                "contactType": "emergency",
+                "availableLanguage": ["English", "Swahili"]
+              },
+              {
+                "@type": "ContactPoint",
+                "telephone": "+254722419080",
+                "contactType": "reservations",
+                "availableLanguage": ["English", "Swahili"]
+              }
+            ],
+            "hasCredential": [
+              {
+                "@type": "EducationalOccupationalCredential",
+                "credentialCategory": "Accreditation",
+                "name": "SHA — Social Health Authority"
+              },
+              {
+                "@type": "EducationalOccupationalCredential",
+                "credentialCategory": "Accreditation",
+                "name": "KMPDC — Kenya Medical Practitioners and Dentists Council"
+              },
+              {
+                "@type": "EducationalOccupationalCredential",
+                "credentialCategory": "Accreditation",
+                "name": "NCK — Nursing Council of Kenya"
+              },
+              {
+                "@type": "EducationalOccupationalCredential",
+                "credentialCategory": "Accreditation",
+                "name": "PPB — Pharmacy and Poisons Board"
+              }
+            ],
+            "availableService": [
+              { "@type": "MedicalProcedure", "name": "Intensive Care (ICU)", "url": "https://alphahillmedical.co.ke/services.html#icu" },
+              { "@type": "MedicalProcedure", "name": "Maternity Services", "url": "https://alphahillmedical.co.ke/services.html#maternity" },
+              { "@type": "MedicalProcedure", "name": "Major & Minor Surgeries", "url": "https://alphahillmedical.co.ke/services.html#surgery" },
+              { "@type": "MedicalTest", "name": "CT Scan Services", "url": "https://alphahillmedical.co.ke/services.html#ct-scan" },
+              { "@type": "MedicalTest", "name": "X-Ray Services", "url": "https://alphahillmedical.co.ke/services.html#x-ray" },
+              { "@type": "MedicalTest", "name": "Ultrasound Services", "url": "https://alphahillmedical.co.ke/services.html#ultrasound" },
+              { "@type": "MedicalProcedure", "name": "Endoscopy & Colonoscopy", "url": "https://alphahillmedical.co.ke/services.html#endoscopy" },
+              { "@type": "MedicalProcedure", "name": "Dental Services", "url": "https://alphahillmedical.co.ke/services.html#dental" },
+              { "@type": "MedicalProcedure", "name": "Eyecare / Optometry", "url": "https://alphahillmedical.co.ke/services.html#eyecare" },
+              { "@type": "MedicalProcedure", "name": "Dialysis Services", "url": "https://alphahillmedical.co.ke/services.html#dialysis" },
+              { "@type": "MedicalProcedure", "name": "Physiotherapy", "url": "https://alphahillmedical.co.ke/services.html#physiotherapy" },
+              { "@type": "MedicalTest", "name": "24-Hour Laboratory", "url": "https://alphahillmedical.co.ke/services.html#laboratory" },
+              { "@type": "Pharmacy", "name": "24-Hour Pharmacy", "url": "https://alphahillmedical.co.ke/services.html#pharmacy" }
+            ]
+          },
+          {
+            "@type": "WebSite",
+            "@id": "https://alphahillmedical.co.ke/#website",
+            "url": "https://alphahillmedical.co.ke/",
+            "name": "Alpha Hill Medical Centre",
+            "publisher": { "@id": "https://alphahillmedical.co.ke/#organization" },
+            "inLanguage": "en"
+          },
+          {
+            "@type": "WebPage",
+            "@id": "https://alphahillmedical.co.ke/#webpage",
+            "url": "https://alphahillmedical.co.ke/",
+            "name": "Alpha Hill Medical Centre | Inspiring Better Healthcare in Nandi County",
+            "isPartOf": { "@id": "https://alphahillmedical.co.ke/#website" },
+            "about": { "@id": "https://alphahillmedical.co.ke/#organization" },
+            "primaryImageOfPage": "https://alphahillmedical.co.ke/images/hero-hospitalaerialviewtwo.jpeg",
+            "description": "Comprehensive, affordable, high-quality healthcare in the heart of Nandi County — open 24/7.",
+            "inLanguage": "en"
+          },
+          {
+            "@type": "BreadcrumbList",
+            "@id": "https://alphahillmedical.co.ke/#breadcrumb",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://alphahillmedical.co.ke/"
+              }
+            ]
+          }
+        ]
       }
     </script>
   </head>
@@ -119,6 +276,7 @@
           <li><a href="services.html">Services</a></li>
           <li><a href="insurance.html">Insurance</a></li>
           <li><a href="patients.html">Patients</a></li>
+          <li><a href="reviews.html">Reviews</a></li>
           <li><a href="contact.html">Contact</a></li>
         </ul>
         <div class="nav-actions">
@@ -319,12 +477,34 @@
         </div>
       </section>
 
+      <!-- ========================= TRUST BAR =========================== -->
+      <section class="trust-bar" aria-label="Alpha Hill at a glance">
+        <div class="container">
+          <div class="trust-item">
+            <strong>24/7</strong>
+            <span>Open Every Day</span>
+          </div>
+          <div class="trust-item">
+            <strong>15+</strong>
+            <span>Specialised Services</span>
+          </div>
+          <div class="trust-item">
+            <strong>4</strong>
+            <span>National Accreditations</span>
+          </div>
+          <div class="trust-item">
+            <strong>100%</strong>
+            <span>Compassionate Care</span>
+          </div>
+        </div>
+      </section>
+
       <!-- ========================= INTRO / WELCOME ===================== -->
       <section class="section" aria-labelledby="welcome-title">
         <div class="container split">
           <div class="split__media reveal">
             <img
-              src="images/reception area hospital.jpeg"
+              src="images/reception area hospital.png"
               alt="Patients being welcomed at the Alpha Hill Medical Centre reception desk"
             />
             <div class="split__badge">
@@ -785,6 +965,160 @@
         </div>
       </section>
 
+      <!-- ========================= PATIENT REVIEWS ===================== -->
+      <!-- NOTE: The three reviews below are sample placeholders.
+           Replace the quotes and names with genuine patient feedback. -->
+      <section class="section" aria-labelledby="reviews-title">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">What Our Patients Say</p>
+            <h2 id="reviews-title">Trusted by the community we serve</h2>
+            <p>
+              The kind words of the people we care for inspire us to keep
+              raising our standard of service every single day.
+            </p>
+            <div class="rule"></div>
+          </div>
+          <div class="grid grid--3">
+            <article class="review-card reveal">
+              <span class="stars" role="img" aria-label="Rated 5 out of 5">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+              </span>
+              <blockquote>
+                “I delivered my baby here and the maternity team was so kind and
+                attentive throughout. I felt safe every step of the way. God
+                bless Alpha Hill.”
+              </blockquote>
+              <div class="review-author">
+                <span class="review-avatar" aria-hidden="true">JC</span>
+                <div>
+                  <div class="name">Jane C.</div>
+                  <div class="meta">Maternity patient · Mosoriot</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="review-card reveal">
+              <span class="stars" role="img" aria-label="Rated 5 out of 5">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+              </span>
+              <blockquote>
+                “Their CT scan and laboratory saved us a long trip to the city.
+                Fast results, professional staff and very fair prices. Highly
+                recommended.”
+              </blockquote>
+              <div class="review-author">
+                <span class="review-avatar" aria-hidden="true">SK</span>
+                <div>
+                  <div class="name">Samuel K.</div>
+                  <div class="meta">Outpatient · Kabiyet</div>
+                </div>
+              </div>
+            </article>
+
+            <article class="review-card reveal">
+              <span class="stars" role="img" aria-label="Rated 5 out of 5">
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path
+                    d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z"
+                  />
+                </svg>
+              </span>
+              <blockquote>
+                “I was admitted for surgery and the doctors explained everything
+                clearly. The wards are clean and the nurses truly care. Thank
+                you for the excellent treatment.”
+              </blockquote>
+              <div class="review-author">
+                <span class="review-avatar" aria-hidden="true">MR</span>
+                <div>
+                  <div class="name">Mary R.</div>
+                  <div class="meta">Surgical patient · Nandi</div>
+                </div>
+              </div>
+            </article>
+          </div>
+
+          <div class="review-cta reveal">
+            <h3>Your feedback helps us serve you better</h3>
+            <p>
+              Have you visited Alpha Hill Medical Centre? Your experience
+              matters to us. Sharing your feedback helps us keep improving the
+              quality of care we provide to you and the whole community.
+            </p>
+            <a class="btn btn--primary" href="reviews.html">Leave a Review →</a>
+          </div>
+        </div>
+      </section>
+
       <!-- ========================= INSURANCE STRIP ===================== -->
       <section class="section section--grey" aria-labelledby="ins-title">
         <div class="container">
@@ -897,6 +1231,7 @@
             <li><a href="services.html">Our Services</a></li>
             <li><a href="insurance.html">Insurance Partners</a></li>
             <li><a href="patients.html">Patient Information</a></li>
+            <li><a href="reviews.html">Reviews &amp; Feedback</a></li>
             <li><a href="contact.html">Contact Us</a></li>
           </ul>
         </div>

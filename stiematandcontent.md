@@ -342,7 +342,7 @@ We are here for you 24 hours a day, 7 days a week.
 alphahillmedical@gmail.com
 
 **Website:**
-www.alphahillmedical.or.ke
+alphahillmedical.co.ke
 
 **Physical Address:**
 Along Mosoriot – Kabiyet Road,
