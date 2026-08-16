@@ -27,25 +27,78 @@
 
       <%- include('partials/flash') %>
 
-      <div class="filters">
-        <a href="/dashboard/news" class="<%= filter === 'all' ? 'is-active' : '' %>">All</a>
-        <a href="/dashboard/news?status=published" class="<%= filter === 'published' ? 'is-active' : '' %>">Published</a>
-        <a href="/dashboard/news?status=draft" class="<%= filter === 'draft' ? 'is-active' : '' %>">Drafts</a>
+      <% const newsQuery = { status: filter, q: q, category: category }; %>
+      <div class="toolbar">
+        <div class="filters">
+          <a href="<%= listHref('/dashboard/news', newsQuery, { status: 'all', page: 1 }) %>" class="<%= filter === 'all' ? 'is-active' : '' %>">All</a>
+          <a href="<%= listHref('/dashboard/news', newsQuery, { status: 'published', page: 1 }) %>" class="<%= filter === 'published' ? 'is-active' : '' %>">Published</a>
+          <a href="<%= listHref('/dashboard/news', newsQuery, { status: 'draft', page: 1 }) %>" class="<%= filter === 'draft' ? 'is-active' : '' %>">Drafts</a>
+        </div>
+
+        <form class="search-form" method="get" action="/dashboard/news" role="search">
+          <% if (filter !== 'all') { %>
+            <input type="hidden" name="status" value="<%= filter %>" />
+          <% } %>
+          <label class="visually-hidden" for="news-category">Category</label>
+          <select id="news-category" name="category">
+            <option value="">All categories</option>
+            <% categories.forEach(function (name) { %>
+              <option value="<%= name %>" <%= category === name ? 'selected' : '' %>><%= name %></option>
+            <% }); %>
+          </select>
+          <label class="visually-hidden" for="news-q">Search posts</label>
+          <input
+            type="search"
+            id="news-q"
+            name="q"
+            value="<%= q %>"
+            maxlength="80"
+            placeholder="Search title, category or body"
+          />
+          <button class="btn btn--outline" type="submit">Search</button>
+          <% if (q || category) { %>
+            <a class="btn btn--outline" href="<%= listHref('/dashboard/news', { status: filter }) %>">Clear</a>
+          <% } %>
+        </form>
       </div>
 
       <section class="card">
         <% if (posts.length === 0) { %>
           <div class="empty">
-            <h3>No posts here yet</h3>
-            <p>
-              Anything you publish appears on the public News &amp; Events page
-              straight away. Drafts stay private until you publish them.
-            </p>
-            <p style="margin-top: 1rem">
-              <a class="btn btn--primary btn--sm" href="/dashboard/news/new">Create the first post</a>
-            </p>
+            <% if (q || category) { %>
+              <h3>No matching posts</h3>
+              <p>
+                Nothing matched
+                <% if (q) { %>“<%= q %>”<% } %>
+                <% if (category) { %><%= q ? ' in ' : '' %><%= category %><% } %>.
+                Try a different search or
+                <a href="<%= listHref('/dashboard/news', { status: filter }) %>">clear filters</a>.
+              </p>
+            <% } else if (filter === 'published') { %>
+              <h3>No published posts</h3>
+              <p>Drafts stay private until you publish them.</p>
+            <% } else if (filter === 'draft') { %>
+              <h3>No drafts</h3>
+              <p>Everything is published, or you have not started a post yet.</p>
+            <% } else { %>
+              <h3>No posts yet</h3>
+              <p>
+                Anything you publish appears on the public News &amp; Events page
+                straight away. Drafts stay private until you publish them.
+              </p>
+              <p style="margin-top: 1rem">
+                <a class="btn btn--primary btn--sm" href="/dashboard/news/new">Create the first post</a>
+              </p>
+            <% } %>
           </div>
         <% } else { %>
+          <% if (q || category || pager.needed) { %>
+            <p class="result-meta">
+              Showing <%= pager.from %>–<%= pager.to %> of <%= pager.total %>
+              <%= pager.total === 1 ? 'post' : 'posts' %>
+              <% if (q) { %> matching “<%= q %>”<% } %>
+            </p>
+          <% } %>
           <div class="table-wrap">
             <table>
               <thead>
@@ -106,6 +159,7 @@
               </tbody>
             </table>
           </div>
+          <%- include('partials/pager', { pager: pager, hrefBase: '/dashboard/news', query: newsQuery }) %>
         <% } %>
       </section>
     </main>

@@ -29,42 +29,77 @@
 
       <%- include('partials/flash') %>
 
-      <div class="filters">
-        <a href="/dashboard/reviews?state=pending" class="<%= filter === 'pending' ? 'is-active' : '' %>">
-          Awaiting approval <span class="count">(<%= tally.pending || 0 %>)</span>
-        </a>
-        <a href="/dashboard/reviews?state=approved" class="<%= filter === 'approved' ? 'is-active' : '' %>">
-          Approved &amp; live <span class="count">(<%= tally.approved || 0 %>)</span>
-        </a>
-        <a href="/dashboard/reviews?state=rejected" class="<%= filter === 'rejected' ? 'is-active' : '' %>">
-          Rejected <span class="count">(<%= tally.rejected || 0 %>)</span>
-        </a>
+      <% const reviewsQuery = { state: filter, q: q }; %>
+      <div class="toolbar">
+        <div class="filters">
+          <a href="<%= listHref('/dashboard/reviews', reviewsQuery, { state: 'pending', page: 1 }) %>" class="<%= filter === 'pending' ? 'is-active' : '' %>">
+            Awaiting approval <span class="count">(<%= tally.pending || 0 %>)</span>
+          </a>
+          <a href="<%= listHref('/dashboard/reviews', reviewsQuery, { state: 'approved', page: 1 }) %>" class="<%= filter === 'approved' ? 'is-active' : '' %>">
+            Approved &amp; live <span class="count">(<%= tally.approved || 0 %>)</span>
+          </a>
+          <a href="<%= listHref('/dashboard/reviews', reviewsQuery, { state: 'rejected', page: 1 }) %>" class="<%= filter === 'rejected' ? 'is-active' : '' %>">
+            Rejected <span class="count">(<%= tally.rejected || 0 %>)</span>
+          </a>
+        </div>
+
+        <form class="search-form" method="get" action="/dashboard/reviews" role="search">
+          <input type="hidden" name="state" value="<%= filter %>" />
+          <label class="visually-hidden" for="reviews-q">Search reviews</label>
+          <input
+            type="search"
+            id="reviews-q"
+            name="q"
+            value="<%= q %>"
+            maxlength="80"
+            placeholder="Search name, email, phone or review"
+          />
+          <button class="btn btn--outline" type="submit">Search</button>
+          <% if (q) { %>
+            <a class="btn btn--outline" href="<%= listHref('/dashboard/reviews', { state: filter }) %>">Clear</a>
+          <% } %>
+        </form>
       </div>
 
       <% if (reviews.length === 0) { %>
         <section class="card">
           <div class="empty">
-            <h3>
-              <% if (filter === 'pending') { %>Nothing waiting for approval
-              <% } else if (filter === 'approved') { %>No approved reviews yet
-              <% } else { %>No rejected reviews
-              <% } %>
-            </h3>
-            <p>
-              <% if (filter === 'pending') { %>
+            <% if (q) { %>
+              <h3>No matching reviews</h3>
+              <p>
+                Nothing in this list matched “<%= q %>”.
+                <a href="<%= listHref('/dashboard/reviews', { state: filter }) %>">Clear the search</a>
+                or try another tab.
+              </p>
+            <% } else if (filter === 'pending') { %>
+              <h3>Nothing waiting for approval</h3>
+              <p>
                 New reviews submitted on the website will land here for you to
                 check before they go public.
-              <% } else if (filter === 'approved') { %>
+              </p>
+            <% } else if (filter === 'approved') { %>
+              <h3>No approved reviews yet</h3>
+              <p>
                 Approve a pending review and it will show up on the public
                 Reviews page right away.
-              <% } else { %>
+              </p>
+            <% } else { %>
+              <h3>No rejected reviews</h3>
+              <p>
                 Reviews you reject are kept here for your records but are never
                 shown on the website.
-              <% } %>
-            </p>
+              </p>
+            <% } %>
           </div>
         </section>
       <% } else { %>
+        <% if (q || pager.needed) { %>
+          <p class="result-meta">
+            Showing <%= pager.from %>–<%= pager.to %> of <%= pager.total %>
+            <%= pager.total === 1 ? 'review' : 'reviews' %>
+            <% if (q) { %> matching “<%= q %>”<% } %>
+          </p>
+        <% } %>
         <div class="review-list">
           <% reviews.forEach(function (review) { %>
             <article class="review-item">
@@ -109,7 +144,7 @@
 
               <form method="post" action="/dashboard/reviews/<%= review.id %>/moderation">
                 <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
-                <input type="hidden" name="redirect_to" value="/dashboard/reviews?state=<%= filter %>" />
+                <input type="hidden" name="redirect_to" value="<%= listHref('/dashboard/reviews', reviewsQuery, { page: pager.page }) %>" />
 
                 <div class="caption-fields">
                   <div class="field">
@@ -169,6 +204,7 @@
             </article>
           <% }); %>
         </div>
+        <%- include('partials/pager', { pager: pager, hrefBase: '/dashboard/reviews', query: reviewsQuery }) %>
       <% } %>
     </main>
   </div>

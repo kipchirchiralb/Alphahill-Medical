@@ -1,0 +1,16 @@
+<% if (pager && pager.needed) { %>
+  <nav class="pager" aria-label="Pagination">
+    <p class="pager__meta">
+      Showing <%= pager.from %>–<%= pager.to %> of <%= pager.total %>
+    </p>
+    <div class="pager__links">
+      <% if (pager.page > 1) { %>
+        <a class="btn btn--outline btn--sm" href="<%= listHref(hrefBase, query, { page: pager.page - 1 }) %>">Previous</a>
+      <% } %>
+      <span class="pager__page">Page <%= pager.page %> of <%= pager.totalPages %></span>
+      <% if (pager.page < pager.totalPages) { %>
+        <a class="btn btn--outline btn--sm" href="<%= listHref(hrefBase, query, { page: pager.page + 1 }) %>">Next</a>
+      <% } %>
+    </div>
+  </nav>
+<% } %>

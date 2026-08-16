@@ -21,35 +21,74 @@
 
       <%- include('partials/flash') %>
 
-      <div class="filters">
-        <a href="/dashboard/submissions/<%= typeSlug %>" class="<%= filter === 'all' ? 'is-active' : '' %>">
-          All <span class="count">(<%= tally.total || 0 %>)</span>
-        </a>
-        <a href="/dashboard/submissions/<%= typeSlug %>?status=new" class="<%= filter === 'new' ? 'is-active' : '' %>">
-          New <span class="count">(<%= tally.new_count || 0 %>)</span>
-        </a>
-        <a href="/dashboard/submissions/<%= typeSlug %>?status=read" class="<%= filter === 'read' ? 'is-active' : '' %>">
-          Read <span class="count">(<%= tally.read_count || 0 %>)</span>
-        </a>
-        <a href="/dashboard/submissions/<%= typeSlug %>?status=handled" class="<%= filter === 'handled' ? 'is-active' : '' %>">
-          Handled <span class="count">(<%= tally.handled_count || 0 %>)</span>
-        </a>
+      <% const listQuery = { status: filter, q: q }; %>
+      <% const listPath = '/dashboard/submissions/' + typeSlug; %>
+      <div class="toolbar">
+        <div class="filters">
+          <a href="<%= listHref(listPath, listQuery, { status: 'all', page: 1 }) %>" class="<%= filter === 'all' ? 'is-active' : '' %>">
+            All <span class="count">(<%= tally.total || 0 %>)</span>
+          </a>
+          <a href="<%= listHref(listPath, listQuery, { status: 'new', page: 1 }) %>" class="<%= filter === 'new' ? 'is-active' : '' %>">
+            New <span class="count">(<%= tally.new_count || 0 %>)</span>
+          </a>
+          <a href="<%= listHref(listPath, listQuery, { status: 'read', page: 1 }) %>" class="<%= filter === 'read' ? 'is-active' : '' %>">
+            Read <span class="count">(<%= tally.read_count || 0 %>)</span>
+          </a>
+          <a href="<%= listHref(listPath, listQuery, { status: 'handled', page: 1 }) %>" class="<%= filter === 'handled' ? 'is-active' : '' %>">
+            Handled <span class="count">(<%= tally.handled_count || 0 %>)</span>
+          </a>
+        </div>
+
+        <form class="search-form" method="get" action="<%= listPath %>" role="search">
+          <% if (filter !== 'all') { %>
+            <input type="hidden" name="status" value="<%= filter %>" />
+          <% } %>
+          <label class="visually-hidden" for="submissions-q">Search <%= type.label.toLowerCase() %></label>
+          <input
+            type="search"
+            id="submissions-q"
+            name="q"
+            value="<%= q %>"
+            maxlength="80"
+            placeholder="Search <%= type.label.toLowerCase() %>"
+          />
+          <button class="btn btn--outline" type="submit">Search</button>
+          <% if (q) { %>
+            <a class="btn btn--outline" href="<%= listHref(listPath, { status: filter }) %>">Clear</a>
+          <% } %>
+        </form>
       </div>
 
       <section class="card">
         <% if (rows.length === 0) { %>
           <div class="empty">
-            <h3>No <%= type.singular %> records<%= filter === 'all' ? '' : ' with this status' %></h3>
-            <p>
-              <% if (filter === 'all') { %>
+            <% if (q) { %>
+              <h3>No matching <%= type.label.toLowerCase() %></h3>
+              <p>
+                Nothing matched “<%= q %>”.
+                <a href="<%= listHref(listPath, { status: filter }) %>">Clear the search</a>
+                <% if (filter !== 'all') { %> or try All.<% } %>
+              </p>
+            <% } else if (filter === 'all') { %>
+              <h3>No <%= type.singular %> records yet</h3>
+              <p>
                 As soon as someone submits the form on the website, it will
                 appear here.
-              <% } else { %>
+              </p>
+            <% } else { %>
+              <h3>No <%= type.singular %> records with this status</h3>
+              <p>
                 Try a different filter to see the rest of the <%= type.label.toLowerCase() %>.
-              <% } %>
-            </p>
+              </p>
+            <% } %>
           </div>
         <% } else { %>
+          <% if (q || pager.needed) { %>
+            <p class="result-meta">
+              Showing <%= pager.from %>–<%= pager.to %> of <%= pager.total %>
+              <% if (q) { %> matching “<%= q %>”<% } %>
+            </p>
+          <% } %>
           <div class="table-wrap">
             <table>
               <thead>
@@ -99,7 +138,7 @@
                             <input
                               type="hidden"
                               name="redirect_to"
-                              value="/dashboard/submissions/<%= typeSlug %><%= filter === 'all' ? '' : '?status=' + filter %>"
+                              value="<%= listHref(listPath, listQuery, { page: pager.page }) %>"
                             />
                             <button class="btn btn--outline btn--sm" type="submit"><%= status %></button>
                           </form>
@@ -111,6 +150,7 @@
               </tbody>
             </table>
           </div>
+          <%- include('partials/pager', { pager: pager, hrefBase: listPath, query: listQuery }) %>
         <% } %>
       </section>
     </main>

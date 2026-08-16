@@ -87,6 +87,12 @@
     else if (mq.addListener) mq.addListener(onBreakpoint);
   }
 
+  document.querySelectorAll(".search-form select").forEach(function (select) {
+    select.addEventListener("change", function () {
+      if (select.form) select.form.submit();
+    });
+  });
+
   document.addEventListener("keydown", function (event) {
     if (event.key !== "Escape") return;
     if (document.body.classList.contains("dash-nav-open")) {

@@ -26,6 +26,11 @@ const {
   initials,
   publicName,
   toCsv,
+  parseSearchQuery,
+  likeContains,
+  parsePage,
+  pagination,
+  listHref,
 } = require("../lib/helpers");
 const { loadDashboardStats } = require("../lib/analytics");
 
@@ -183,6 +188,7 @@ function withViewDefaults(req, res, next) {
   res.locals.formatDateTime = formatDateTime;
   res.locals.initials = initials;
   res.locals.publicName = publicName;
+  res.locals.listHref = listHref;
   res.locals.active = "";
   next();
 }
@@ -220,6 +226,33 @@ function safeRedirect(value, fallback) {
   // Reject protocol-relative ("//evil.com") and absolute URLs.
   if (!value.startsWith("/dashboard") || value.startsWith("//")) return fallback;
   return value;
+}
+
+const NEWS_PAGE_SIZE = 25;
+const REVIEWS_PAGE_SIZE = 20;
+const SUBMISSIONS_PAGE_SIZE = 25;
+
+function searchWhere(columns, q) {
+  if (!q || !columns.length) return { sql: "", params: [] };
+  const like = likeContains(q);
+  return {
+    sql: `(${columns.map((column) => `\`${column}\` LIKE ?`).join(" OR ")})`,
+    params: columns.map(() => like),
+  };
+}
+
+function combineWhere(parts) {
+  const clauses = [];
+  const params = [];
+  for (const part of parts) {
+    if (!part || !part.sql) continue;
+    clauses.push(part.sql);
+    params.push(...part.params);
+  }
+  return {
+    sql: clauses.length ? `WHERE ${clauses.join(" AND ")}` : "",
+    params,
+  };
 }
 
 router.use(withFlash);
@@ -459,11 +492,28 @@ router.get(
     const filter = ["draft", "published"].includes(req.query.status)
       ? req.query.status
       : "all";
+    const category = NEWS_CATEGORIES.includes(req.query.category)
+      ? req.query.category
+      : "";
+    const q = parseSearchQuery(req.query.q);
+
+    const where = combineWhere([
+      filter === "all" ? null : { sql: "status = ?", params: [filter] },
+      category ? { sql: "category = ?", params: [category] } : null,
+      searchWhere(["title", "excerpt", "category", "location", "body"], q),
+    ]);
+
+    const [[{ total }]] = await db.execute(
+      `SELECT COUNT(*) AS total FROM news ${where.sql}`,
+      where.params
+    );
+    const pager = pagination(total, parsePage(req.query.page), NEWS_PAGE_SIZE);
 
     const [posts] = await db.execute(
-      filter === "all"
-        ? "SELECT * FROM news ORDER BY COALESCE(published_at, updated_at) DESC"
-        : `SELECT * FROM news WHERE status = '${filter}' ORDER BY COALESCE(published_at, updated_at) DESC`
+      `SELECT * FROM news ${where.sql}
+       ORDER BY COALESCE(published_at, updated_at) DESC
+       LIMIT ${pager.perPage} OFFSET ${pager.offset}`,
+      where.params
     );
 
     res.render("dashboard/news-list", {
@@ -472,6 +522,10 @@ router.get(
       counts: await loadUnreadCounts(),
       posts,
       filter,
+      category,
+      q,
+      pager,
+      categories: NEWS_CATEGORIES,
     });
   })
 );
@@ -702,9 +756,24 @@ router.get(
   "/reviews",
   asyncRoute(async (req, res) => {
     const filter = MODERATIONS.includes(req.query.state) ? req.query.state : "pending";
+    const q = parseSearchQuery(req.query.q);
+
+    const where = combineWhere([
+      { sql: "moderation = ?", params: [filter] },
+      searchWhere(["name", "email", "phone", "message", "service", "location"], q),
+    ]);
+
+    const [[{ total }]] = await db.execute(
+      `SELECT COUNT(*) AS total FROM feedback ${where.sql}`,
+      where.params
+    );
+    const pager = pagination(total, parsePage(req.query.page), REVIEWS_PAGE_SIZE);
 
     const [reviews] = await db.execute(
-      `SELECT * FROM feedback WHERE moderation = '${filter}' ORDER BY created_at DESC`
+      `SELECT * FROM feedback ${where.sql}
+       ORDER BY created_at DESC
+       LIMIT ${pager.perPage} OFFSET ${pager.offset}`,
+      where.params
     );
 
     const [[tally]] = await db.execute(
@@ -721,6 +790,8 @@ router.get(
       counts: await loadUnreadCounts(),
       reviews,
       filter,
+      q,
+      pager,
       tally,
     });
   })
@@ -803,11 +874,25 @@ router.get(
     if (!type) return res.status(404).render("dashboard/404", { title: "Not found" });
 
     const filter = STATUSES.includes(req.query.status) ? req.query.status : "all";
+    const q = parseSearchQuery(req.query.q);
+    const searchColumns = type.columns.map((column) => column.key);
+
+    const where = combineWhere([
+      filter === "all" ? null : { sql: "status = ?", params: [filter] },
+      searchWhere(searchColumns, q),
+    ]);
+
+    const [[{ total }]] = await db.execute(
+      `SELECT COUNT(*) AS total FROM ${type.table} ${where.sql}`,
+      where.params
+    );
+    const pager = pagination(total, parsePage(req.query.page), SUBMISSIONS_PAGE_SIZE);
 
     const [rows] = await db.execute(
-      filter === "all"
-        ? `SELECT * FROM ${type.table} ORDER BY created_at DESC`
-        : `SELECT * FROM ${type.table} WHERE status = '${filter}' ORDER BY created_at DESC`
+      `SELECT * FROM ${type.table} ${where.sql}
+       ORDER BY created_at DESC
+       LIMIT ${pager.perPage} OFFSET ${pager.offset}`,
+      where.params
     );
 
     const [[tally]] = await db.execute(
@@ -827,6 +912,8 @@ router.get(
       typeSlug: req.params.type,
       rows,
       filter,
+      q,
+      pager,
       tally,
       statuses: STATUSES,
     });
