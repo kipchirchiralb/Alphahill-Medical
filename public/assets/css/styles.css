@@ -815,6 +815,15 @@ ul {
   width: 28px;
   height: 28px;
 }
+.card .partner-logo {
+  display: block;
+  height: 56px;
+  width: auto;
+  max-width: 160px;
+  object-fit: contain;
+  object-position: left center;
+  margin-bottom: 1.1rem;
+}
 .card__link {
   display: inline-flex;
   align-items: center;

@@ -343,7 +343,9 @@ router.post("/login/verify", redirectIfAuthed, verifyCsrf, async (req, res) => {
       signedInAt: new Date().toISOString(),
     };
 
-    return req.session.save(() => res.redirect(returnTo || "/dashboard"));
+    return req.session.save(() =>
+      res.redirect(safeRedirect(returnTo, "/dashboard"))
+    );
   });
 });
 
@@ -882,5 +884,9 @@ router.get(
     res.send(`\uFEFF${csv}`);
   })
 );
+
+router.use((req, res) => {
+  res.status(404).render("dashboard/404", { title: "Not found" });
+});
 
 module.exports = router;

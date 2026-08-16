@@ -1,3 +1,37 @@
+const FINGERPRINT_HEADERS = new Set([
+  "server",
+  "x-powered-by",
+  "x-aspnet-version",
+  "x-aspnetmvc-version",
+  "x-generator",
+]);
+
+/**
+ * Stops the app advertising Express (or any other stack) in HTTP headers.
+ * Intercepts later writes so a library cannot put `X-Powered-By` back.
+ */
+function hideServerIdentity(req, res, next) {
+  res.removeHeader("X-Powered-By");
+  res.removeHeader("Server");
+
+  const originalSetHeader = res.setHeader;
+  res.setHeader = function setHeader(name, value) {
+    if (typeof name === "string" && FINGERPRINT_HEADERS.has(name.toLowerCase())) {
+      return this;
+    }
+    return originalSetHeader.apply(this, arguments);
+  };
+
+  const originalWriteHead = res.writeHead;
+  res.writeHead = function writeHead() {
+    this.removeHeader("X-Powered-By");
+    this.removeHeader("Server");
+    return originalWriteHead.apply(this, arguments);
+  };
+
+  next();
+}
+
 /**
  * Baseline HTTP security headers for the public site.
  * Dashboard routes apply a stricter CSP in middleware/privacy.js instead.
@@ -63,6 +97,7 @@ function assertDatabaseEnv() {
 }
 
 module.exports = {
+  hideServerIdentity,
   publicSecurityHeaders,
   assertSessionSecret,
   assertDatabaseEnv,

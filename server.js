@@ -10,6 +10,7 @@ dotenv.config();
 const { noIndexNoTrack } = require("./middleware/privacy");
 const { trackPageview } = require("./middleware/analytics");
 const {
+  hideServerIdentity,
   publicSecurityHeaders,
   assertSessionSecret,
   assertDatabaseEnv,
@@ -21,6 +22,9 @@ assertDatabaseEnv();
 assertSessionSecret();
 
 const app = express();
+app.disable("x-powered-by");
+app.use(hideServerIdentity);
+
 const isProduction = process.env.NODE_ENV === "production";
 
 // Required for secure cookies and correct req.ip when behind a reverse proxy.
@@ -87,7 +91,9 @@ app.use("/api", require("./routes/api"));
 // 404 handler
 app.use((req, res) => {
   if (req.path.startsWith("/dashboard")) {
-    return res.status(404).render("dashboard/404", { title: "Not found" });
+    return noIndexNoTrack(req, res, () => {
+      res.status(404).render("dashboard/404", { title: "Not found" });
+    });
   }
   res.status(404).render("404", {
     title: "Page not found | Alpha Hill Medical Centre",
@@ -100,6 +106,12 @@ app.use((err, req, res, next) => {
 
   if (req.path.startsWith("/api")) {
     return res.status(500).json({ error: "Something went wrong" });
+  }
+
+  if (req.path.startsWith("/dashboard")) {
+    return noIndexNoTrack(req, res, () => {
+      res.status(500).render("dashboard/404", { title: "Something went wrong" });
+    });
   }
 
   res.status(500).send("Something went wrong!");

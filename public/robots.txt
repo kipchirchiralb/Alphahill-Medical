@@ -1,9 +1,10 @@
+# Disallow rules come first so first-match crawlers never treat /dashboard as allowed.
 User-agent: *
-Allow: /
-Allow: /privacy
-Allow: /cookies
+Disallow: /dashboard
+Disallow: /dashboard/
 
-# Private staff area — never index.
+# AdsBot ignores User-agent: * — block the staff area explicitly.
+User-agent: AdsBot-Google
 Disallow: /dashboard
 Disallow: /dashboard/
 

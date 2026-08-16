@@ -2,6 +2,8 @@ const express = require("express");
 const crypto = require("crypto");
 const router = express.Router();
 const db = require("../config/database");
+const { sendMail } = require("../lib/mailer");
+const { escapeHtml } = require("../lib/helpers");
 const {
   CONSENT_ACCEPTED,
   CONSENT_DECLINED,
@@ -148,6 +150,55 @@ router.post(
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
       [patient_name, email || "", phone, date_preferred, time_preferred, service, notes]
     );
+
+    const dash = "https://alphahillmedical.co.ke/dashboard/submissions/appointments";
+    const rows = [
+      ["Patient", patient_name],
+      ["Phone", phone],
+      ["Email", email || "—"],
+      ["Preferred date", date_preferred],
+      ["Preferred time", time_preferred],
+      ["Service", service],
+      ["Notes", notes || "—"],
+    ];
+    const textBody = [
+      "A new appointment request was submitted on the website.",
+      "",
+      ...rows.map(([label, value]) => `${label}: ${value}`),
+      "",
+      `Open in the dashboard: ${dash}`,
+    ].join("\n");
+    const htmlBody = `
+      <p style="font-family:Georgia,serif;font-size:16px;color:#1a1a2e">
+        A new appointment request was submitted on the Alpha Hill Medical Centre website.
+      </p>
+      <table style="font-family:Georgia,serif;font-size:15px;color:#1a1a2e;border-collapse:collapse">
+        ${rows
+          .map(
+            ([label, value]) =>
+              `<tr>
+                <td style="padding:6px 16px 6px 0;color:#5a6076;vertical-align:top">${escapeHtml(label)}</td>
+                <td style="padding:6px 0;vertical-align:top">${escapeHtml(value)}</td>
+              </tr>`
+          )
+          .join("")}
+      </table>
+      <p style="font-family:Georgia,serif;font-size:14px;color:#5a6076">
+        <a href="${dash}">View in the staff dashboard</a>
+      </p>
+    `;
+
+    try {
+      await sendMail({
+        to: "info@alphahillmedical.co.ke",
+        replyTo: email || undefined,
+        subject: `Appointment request: ${patient_name} — ${date_preferred} ${time_preferred}`,
+        text: textBody,
+        html: htmlBody,
+      });
+    } catch (error) {
+      console.error("Appointment notification email:", error.message);
+    }
 
     res.status(201).json({
       success: true,

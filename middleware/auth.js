@@ -22,11 +22,20 @@ function requireAuth(req, res, next) {
     });
   }
 
-  if (req.method === "GET" && req.originalUrl.startsWith("/dashboard")) {
-    req.session.returnTo = req.originalUrl;
+  if (req.method === "GET") {
+    const nextPath = safeDashboardPath(req.originalUrl);
+    if (nextPath) req.session.returnTo = nextPath;
   }
 
   return res.redirect("/dashboard/login");
+}
+
+/** Only paths inside the staff area — never an external or protocol-relative URL. */
+function safeDashboardPath(value) {
+  if (typeof value !== "string") return null;
+  if (!value.startsWith("/dashboard") || value.startsWith("//")) return null;
+  if (value.includes("://") || value.includes("\\")) return null;
+  return value;
 }
 
 function redirectIfAuthed(req, res, next) {
@@ -122,5 +131,6 @@ module.exports = {
   recordFailedAttempt,
   clearAttempts,
   sessionIsFresh,
+  safeDashboardPath,
   LOCKOUT_MINUTES: LOCKOUT_MS / 60000,
 };
