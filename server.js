@@ -1,5 +1,4 @@
 const express = require("express");
-const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const session = require("express-session");
 const MySQLStore = require("express-mysql-session")(session);
@@ -34,8 +33,8 @@ app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
 // Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
 // Sessions live in MySQL so staff stay signed in across restarts and the
 // server does not accumulate sessions in memory.

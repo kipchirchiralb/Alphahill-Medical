@@ -1,8 +1,15 @@
--- Create Database
-CREATE DATABASE IF NOT EXISTS alphahill_medical;
+-- Alpha Hill Medical Centre — full current schema
+-- A new database needs only this file. Do not run migrate.js on a fresh install.
+--
+--   mysql -u root -p < schema.sql
+
+CREATE DATABASE IF NOT EXISTS alphahill_medical
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
 USE alphahill_medical;
 
--- Enquiries Table (Contact Form)
+-- Contact form
 CREATE TABLE IF NOT EXISTS enquiries (
   id INT AUTO_INCREMENT PRIMARY KEY,
   full_name VARCHAR(100) NOT NULL,
@@ -11,10 +18,13 @@ CREATE TABLE IF NOT EXISTS enquiries (
   service VARCHAR(100),
   message TEXT NOT NULL,
   status ENUM('new','read','handled') NOT NULL DEFAULT 'new',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_email (email),
+  INDEX idx_phone (phone),
+  INDEX idx_enquiries_status (status)
 );
 
--- Appointments Table
+-- Appointment requests
 CREATE TABLE IF NOT EXISTS appointments (
   id INT AUTO_INCREMENT PRIMARY KEY,
   patient_name VARCHAR(100) NOT NULL,
@@ -25,10 +35,13 @@ CREATE TABLE IF NOT EXISTS appointments (
   service VARCHAR(100) NOT NULL,
   notes TEXT,
   status ENUM('new','read','handled') NOT NULL DEFAULT 'new',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_app_email (email),
+  INDEX idx_app_date (date_preferred),
+  INDEX idx_appointments_status (status)
 );
 
--- Career Applications Table
+-- Career / attachment applications
 CREATE TABLE IF NOT EXISTS career_applications (
   id INT AUTO_INCREMENT PRIMARY KEY,
   full_name VARCHAR(100) NOT NULL,
@@ -39,20 +52,22 @@ CREATE TABLE IF NOT EXISTS career_applications (
   cover_letter TEXT,
   resume_url VARCHAR(255),
   status ENUM('new','read','handled') NOT NULL DEFAULT 'new',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_career_email (email),
+  INDEX idx_career_status (status)
 );
 
--- Newsletter Subscriptions Table
+-- Newsletter
 CREATE TABLE IF NOT EXISTS subscriptions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(100) NOT NULL UNIQUE,
   status ENUM('new','read','handled') NOT NULL DEFAULT 'new',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_subscriptions_status (status)
 );
 
--- Feedback/Reviews Table
--- `moderation` gates public display: only 'approved' rows appear on /reviews.
--- `phone` is optional and staff-only — never shown on the public reviews page.
+-- Reviews. Only rows with moderation = 'approved' appear on /reviews.
+-- phone and email are optional and staff-only.
 CREATE TABLE IF NOT EXISTS feedback (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(100) NOT NULL,
@@ -62,15 +77,16 @@ CREATE TABLE IF NOT EXISTS feedback (
   location VARCHAR(100),
   rating INT CHECK (rating >= 1 AND rating <= 5),
   message TEXT NOT NULL,
-  -- Set when the reviewer ticks the box agreeing to publication.
   consent TINYINT(1) NOT NULL DEFAULT 0,
   moderation ENUM('pending','approved','rejected') NOT NULL DEFAULT 'pending',
   moderated_at DATETIME NULL,
   status ENUM('new','read','handled') NOT NULL DEFAULT 'new',
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_feedback_moderation (moderation),
+  INDEX idx_feedback_status (status)
 );
 
--- News & Events Table (authored from the dashboard)
+-- News & events (dashboard CMS)
 CREATE TABLE IF NOT EXISTS news (
   id INT AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(200) NOT NULL,
@@ -85,11 +101,11 @@ CREATE TABLE IF NOT EXISTS news (
   status ENUM('draft','published') NOT NULL DEFAULT 'draft',
   published_at DATETIME NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_news_status (status, published_at)
 );
 
--- First-party analytics. A row in `visitors` is one unique visit (cookie id).
--- Pageviews are stored only after cookie consent. IP and User-Agent are not stored.
+-- First-party analytics after cookie consent. No IP or User-Agent.
 CREATE TABLE IF NOT EXISTS visitors (
   id CHAR(36) NOT NULL PRIMARY KEY,
   first_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -106,7 +122,7 @@ CREATE TABLE IF NOT EXISTS pageviews (
   INDEX idx_pageviews_viewed_at (viewed_at)
 );
 
--- One-time dashboard sign-in codes. The plaintext code is emailed and never stored.
+-- Dashboard OTP codes. Plaintext is emailed and never stored.
 CREATE TABLE IF NOT EXISTS login_otps (
   id INT AUTO_INCREMENT PRIMARY KEY,
   email VARCHAR(120) NOT NULL,
@@ -119,12 +135,10 @@ CREATE TABLE IF NOT EXISTS login_otps (
   INDEX idx_otp_expires (expires_at)
 );
 
--- Create indexes for better query performance
-CREATE INDEX idx_email ON enquiries(email);
-CREATE INDEX idx_phone ON enquiries(phone);
-CREATE INDEX idx_app_email ON appointments(email);
-CREATE INDEX idx_app_date ON appointments(date_preferred);
-CREATE INDEX idx_career_email ON career_applications(email);
-CREATE INDEX idx_subscription_email ON subscriptions(email);
-CREATE INDEX idx_feedback_moderation ON feedback(moderation);
-CREATE INDEX idx_news_status ON news(status, published_at);
+-- Staff sessions (also created automatically by express-mysql-session).
+CREATE TABLE IF NOT EXISTS sessions (
+  session_id VARCHAR(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  expires INT UNSIGNED NOT NULL,
+  data MEDIUMTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_bin,
+  PRIMARY KEY (session_id)
+);
