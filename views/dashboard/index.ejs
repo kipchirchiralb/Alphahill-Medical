@@ -1,0 +1,195 @@
+<%- include('partials/head') %>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="page-head">
+        <div>
+          <h1>Overview</h1>
+          <p>
+            Everything submitted through the website, plus the news and events
+            published to the public site.
+          </p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn--primary" href="/dashboard/news/new">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5Z" />
+            </svg>
+            New post
+          </a>
+        </div>
+      </div>
+
+      <%- include('partials/flash') %>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <p class="stat__label">Unique visits</p>
+          <p class="stat__value"><%= analytics.uniqueVisits || 0 %></p>
+          <p class="stat__meta">
+            all-time · <%= analytics.weekVisits || 0 %> in the last 7 days
+          </p>
+        </div>
+
+        <div class="stat">
+          <p class="stat__label">Pageviews</p>
+          <p class="stat__value"><%= analytics.pageviews || 0 %></p>
+          <p class="stat__meta">
+            all-time · <%= analytics.weekViews || 0 %> in the last 7 days
+          </p>
+        </div>
+
+        <a class="stat" href="/dashboard/reviews">
+          <p class="stat__label">Reviews awaiting approval</p>
+          <p class="stat__value"><%= reviewTotals.pending || 0 %></p>
+          <p class="stat__meta">
+            <%= reviewTotals.approved || 0 %> approved and live ·
+            <%= reviewTotals.total || 0 %> total
+          </p>
+        </a>
+
+        <a class="stat" href="/dashboard/news">
+          <p class="stat__label">News &amp; events</p>
+          <p class="stat__value"><%= newsTotals.published || 0 %></p>
+          <p class="stat__meta">
+            published · <%= newsTotals.drafts || 0 %> draft<%= (newsTotals.drafts || 0) === 1 ? '' : 's' %>
+          </p>
+        </a>
+
+        <% Object.entries(submissionTypes).forEach(function (entry) { %>
+          <% const slug = entry[0]; const type = entry[1]; %>
+          <a class="stat" href="/dashboard/submissions/<%= slug %>">
+            <p class="stat__label"><%= type.label %></p>
+            <p class="stat__value"><%= totals[slug] || 0 %></p>
+            <p class="stat__meta">
+              <% if (counts[slug] > 0) { %>
+                <strong><%= counts[slug] %> unread</strong>
+              <% } else { %>
+                All caught up
+              <% } %>
+            </p>
+          </a>
+        <% }); %>
+      </div>
+
+      <div class="two-col">
+        <section class="card">
+          <div class="card__head">
+            <h2>Latest activity</h2>
+          </div>
+          <% if (recentActivity.length === 0) { %>
+            <div class="empty">
+              <h3>Nothing yet</h3>
+              <p>
+                Submissions from the contact, appointment, careers, newsletter
+                and review forms will appear here as they arrive.
+              </p>
+            </div>
+          <% } else { %>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>From</th>
+                    <th>Status</th>
+                    <th class="nowrap">Received</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% recentActivity.forEach(function (item) { %>
+                    <tr>
+                      <td><a href="<%= item.href %>"><%= item.kind %></a></td>
+                      <td class="primary-text"><%= item.who || '—' %></td>
+                      <td><span class="badge badge--<%= item.status %>"><%= item.status %></span></td>
+                      <td class="nowrap muted"><%= formatDateTime(item.created_at) %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </section>
+
+        <section class="card">
+          <div class="card__head">
+            <h2>Recent posts</h2>
+            <a class="btn btn--outline btn--sm" href="/dashboard/news">View all</a>
+          </div>
+          <% if (recentPosts.length === 0) { %>
+            <div class="empty">
+              <h3>No posts yet</h3>
+              <p>Create your first news item or event announcement.</p>
+              <p style="margin-top: 1rem">
+                <a class="btn btn--primary btn--sm" href="/dashboard/news/new">New post</a>
+              </p>
+            </div>
+          <% } else { %>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th class="nowrap">Updated</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% recentPosts.forEach(function (post) { %>
+                    <tr>
+                      <td>
+                        <a class="primary-text" href="/dashboard/news/<%= post.id %>/edit"><%= post.title %></a>
+                        <span class="muted" style="display:block; font-size:.8rem"><%= post.category %></span>
+                      </td>
+                      <td><span class="badge badge--<%= post.status %>"><%= post.status %></span></td>
+                      <td class="nowrap muted"><%= formatDateTime(post.updated_at) %></td>
+                    </tr>
+                  <% }); %>
+                </tbody>
+              </table>
+            </div>
+          <% } %>
+        </section>
+      </div>
+
+      <section class="card" style="margin-top: 1.25rem">
+        <div class="card__head">
+          <h2>Most visited pages</h2>
+        </div>
+        <% if (!analytics.paths || analytics.paths.length === 0) { %>
+          <div class="empty">
+            <h3>No pageviews yet</h3>
+            <p>
+              Public visits are counted only after a visitor accepts cookies.
+              The dashboard itself is never recorded.
+            </p>
+          </div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Path</th>
+                  <th class="nowrap">Views</th>
+                  <th class="nowrap">Unique visitors</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% analytics.paths.forEach(function (row) { %>
+                  <tr>
+                    <td class="primary-text"><%= row.path %></td>
+                    <td class="nowrap"><%= row.views %></td>
+                    <td class="nowrap"><%= row.unique_visitors %></td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+</body>
+</html>

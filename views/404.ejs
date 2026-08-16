@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Page not found | Alpha Hill Medical Centre</title>
+    <meta name="robots" content="noindex, follow" />
+    <link rel="icon" type="image/png" href="/alphahillmedicallogo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/public-header', { current: '' }) %>
+
+    <main id="main">
+      <section class="section" style="text-align: center">
+        <div class="container">
+          <p class="eyebrow">Error 404</p>
+          <h1 style="font-size: clamp(2rem, 6vw, 3rem); color: var(--navy)">
+            We couldn't find that page
+          </h1>
+          <p style="max-width: 55ch; margin: 1rem auto 2rem; color: var(--muted)">
+            The page you are looking for may have been moved or no longer
+            exists. Try one of the links below, or call us on
+            <a href="tel:+254722865459">+254 722 865 459</a> — we are open 24/7.
+          </p>
+          <p style="display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap">
+            <a class="btn btn--primary" href="/">Back to Home</a>
+            <a class="btn btn--outline" href="/services">Our Services</a>
+            <a class="btn btn--outline" href="/contact">Contact Us</a>
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/public-footer') %>
+
+    <script src="/assets/js/main.js"></script>
+  </body>
+</html>

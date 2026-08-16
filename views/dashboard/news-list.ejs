@@ -1,0 +1,115 @@
+<%- include('partials/head') %>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="page-head">
+        <div>
+          <h1>News &amp; Events</h1>
+          <p>
+            Publish medical camps, blood drives, vaccination campaigns,
+            announcements and outreach activities to the public News page.
+          </p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn--outline" href="/news" target="_blank" rel="noopener noreferrer">
+            View public page
+          </a>
+          <a class="btn btn--primary" href="/dashboard/news/new">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M11 5h2v6h6v2h-6v6h-2v-6H5v-2h6V5Z" />
+            </svg>
+            New post
+          </a>
+        </div>
+      </div>
+
+      <%- include('partials/flash') %>
+
+      <div class="filters">
+        <a href="/dashboard/news" class="<%= filter === 'all' ? 'is-active' : '' %>">All</a>
+        <a href="/dashboard/news?status=published" class="<%= filter === 'published' ? 'is-active' : '' %>">Published</a>
+        <a href="/dashboard/news?status=draft" class="<%= filter === 'draft' ? 'is-active' : '' %>">Drafts</a>
+      </div>
+
+      <section class="card">
+        <% if (posts.length === 0) { %>
+          <div class="empty">
+            <h3>No posts here yet</h3>
+            <p>
+              Anything you publish appears on the public News &amp; Events page
+              straight away. Drafts stay private until you publish them.
+            </p>
+            <p style="margin-top: 1rem">
+              <a class="btn btn--primary btn--sm" href="/dashboard/news/new">Create the first post</a>
+            </p>
+          </div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th class="nowrap">Event date</th>
+                  <th>Status</th>
+                  <th class="nowrap">Published</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% posts.forEach(function (post) { %>
+                  <tr>
+                    <td>
+                      <a class="primary-text" href="/dashboard/news/<%= post.id %>/edit"><%= post.title %></a>
+                      <% if (post.excerpt) { %>
+                        <span class="longtext" style="font-size:.82rem"><%= post.excerpt %></span>
+                      <% } %>
+                    </td>
+                    <td><span class="badge badge--cat"><%= post.category %></span></td>
+                    <td class="nowrap muted"><%= post.event_date ? formatDate(post.event_date) : '—' %></td>
+                    <td><span class="badge badge--<%= post.status %>"><%= post.status %></span></td>
+                    <td class="nowrap muted"><%= post.published_at ? formatDateTime(post.published_at) : '—' %></td>
+                    <td>
+                      <div class="row-actions">
+                        <a class="btn btn--outline btn--sm" href="/dashboard/news/<%= post.id %>/edit">Edit</a>
+
+                        <% if (post.status === 'published') { %>
+                          <a class="btn btn--outline btn--sm" href="/news/<%= post.slug %>" target="_blank" rel="noopener noreferrer">View</a>
+                          <form class="inline-form" method="post" action="/dashboard/news/<%= post.id %>/status">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                            <input type="hidden" name="status" value="draft" />
+                            <button class="btn btn--outline btn--sm" type="submit">Unpublish</button>
+                          </form>
+                        <% } else { %>
+                          <form class="inline-form" method="post" action="/dashboard/news/<%= post.id %>/status">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                            <input type="hidden" name="status" value="published" />
+                            <button class="btn btn--primary btn--sm" type="submit">Publish</button>
+                          </form>
+                        <% } %>
+
+                        <form
+                          class="inline-form"
+                          method="post"
+                          action="/dashboard/news/<%= post.id %>/delete"
+                          data-confirm="Delete “<%= post.title %>”? This cannot be undone."
+                        >
+                          <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                          <button class="btn btn--danger btn--sm" type="submit">Delete</button>
+                        </form>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

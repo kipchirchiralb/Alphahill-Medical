@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= post.title %> | Alpha Hill Medical Centre</title>
+    <meta name="description" content="<%= post.excerpt %>" />
+    <link rel="canonical" href="<%= site %>/news/<%= post.slug %>" />
+    <meta name="theme-color" content="#001F5D" />
+    <meta property="og:type" content="article" />
+    <meta property="og:site_name" content="Alpha Hill Medical Centre" />
+    <meta property="og:title" content="<%= post.title %>" />
+    <meta property="og:description" content="<%= post.excerpt %>" />
+    <meta property="og:url" content="<%= site %>/news/<%= post.slug %>" />
+    <% if (post.image_url) { %>
+      <meta property="og:image" content="<%= site %><%= post.image_url %>" />
+    <% } %>
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": "<%= post.title.replace(/"/g, '\\"') %>",
+        "datePublished": "<%= post.published_at ? new Date(post.published_at).toISOString() : '' %>",
+        "dateModified": "<%= post.updated_at ? new Date(post.updated_at).toISOString() : '' %>",
+        "mainEntityOfPage": "<%= site %>/news/<%= post.slug %>",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Alpha Hill Medical Centre",
+          "url": "<%= site %>/"
+        }
+      }
+    </script>
+
+    <link rel="icon" type="image/png" href="/alphahillmedicallogo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/public-header', { current: 'news' }) %>
+
+    <main id="main">
+      <section class="section article-head">
+        <div class="container">
+          <p class="breadcrumb">
+            <a href="/">Home</a><span>/</span><a href="/news">News &amp; Events</a
+            ><span>/</span><%= post.category %>
+          </p>
+          <p class="news-card__meta" style="margin-top: 1rem">
+            <span class="news-tag"><%= post.category %></span>
+            <time datetime="<%= (post.event_date || post.published_at) ? new Date(post.event_date || post.published_at).toISOString().slice(0, 10) : '' %>">
+              <%= formatDate(post.event_date || post.published_at) %>
+            </time>
+            <% if (post.location) { %>
+              <span class="news-card__where">📍 <%= post.location %></span>
+            <% } %>
+          </p>
+          <h1 class="article-title"><%= post.title %></h1>
+          <p class="article-lead"><%= post.excerpt %></p>
+        </div>
+      </section>
+
+      <% if (post.image_url) { %>
+        <div class="container">
+          <figure class="article-figure">
+            <img
+              src="<%= post.image_url %>"
+              alt="<%= post.image_alt || post.title %>"
+            />
+          </figure>
+        </div>
+      <% } %>
+
+      <section class="section" style="padding-top: 2rem">
+        <div class="container">
+          <div class="article-body"><%- bodyHtml %></div>
+
+          <p class="article-back">
+            <a class="btn btn--outline" href="/news">← All news &amp; events</a>
+          </p>
+        </div>
+      </section>
+
+      <% if (related.length > 0) { %>
+        <section class="section section--grey" aria-labelledby="related-title">
+          <div class="container">
+            <div class="section-head">
+              <p class="eyebrow">Keep Reading</p>
+              <h2 id="related-title">More from Alpha Hill</h2>
+              <div class="rule"></div>
+            </div>
+            <div class="grid grid--3">
+              <% related.forEach(function (item) { %>
+                <article class="service-card news-card reveal">
+                  <% if (item.image_url) { %>
+                    <figure>
+                      <img
+                        src="<%= item.image_url %>"
+                        alt="<%= item.image_alt || item.title %>"
+                        loading="lazy"
+                      />
+                    </figure>
+                  <% } %>
+                  <div class="body">
+                    <p class="news-card__meta">
+                      <span class="news-tag"><%= item.category %></span>
+                      <time><%= formatDate(item.event_date || item.published_at) %></time>
+                    </p>
+                    <h3><%= item.title %></h3>
+                    <p><%= item.excerpt %></p>
+                    <a class="card__link" href="/news/<%= item.slug %>">
+                      Read more
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M13 5l7 7-7 7-1.4-1.4 4.6-4.6H4v-2h12.2L11.6 6.4 13 5z" />
+                      </svg>
+                    </a>
+                  </div>
+                </article>
+              <% }); %>
+            </div>
+          </div>
+        </section>
+      <% } %>
+    </main>
+
+    <%- include('partials/public-footer') %>
+
+    <script src="/assets/js/main.js"></script>
+  </body>
+</html>

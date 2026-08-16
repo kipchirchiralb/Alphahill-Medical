@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>News &amp; Events | Alpha Hill Medical Centre — Nandi County</title>
+    <meta
+      name="description"
+      content="Medical camps, blood donation drives, vaccination campaigns, community outreach and announcements from Alpha Hill Medical Centre in Mosoriot, Nandi County."
+    />
+    <link rel="canonical" href="<%= site %>/news" />
+    <meta name="theme-color" content="#001F5D" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Alpha Hill Medical Centre" />
+    <meta property="og:title" content="News & Events | Alpha Hill Medical Centre" />
+    <meta
+      property="og:description"
+      content="Stay up to date with medical camps, health campaigns and announcements from Alpha Hill Medical Centre."
+    />
+    <meta property="og:url" content="<%= site %>/news" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <link rel="icon" type="image/png" href="/alphahillmedicallogo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/assets/css/styles.css" />
+  </head>
+  <body>
+    <%- include('partials/public-header', { current: 'news' }) %>
+
+    <main id="main">
+      <section class="page-hero" aria-labelledby="page-title">
+        <div class="page-hero__bg">
+          <img
+            src="/images/staff-studentsengagement.jpeg"
+            alt="Alpha Hill Medical Centre staff engaging with the community"
+          />
+        </div>
+        <div class="container">
+          <p class="breadcrumb">
+            <a href="/">Home</a><span>/</span>News &amp; Events
+          </p>
+          <h1 id="page-title">News &amp; Events</h1>
+          <p>
+            Medical camps, health campaigns, community outreach and
+            announcements from Alpha Hill Medical Centre.
+          </p>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="posts-title">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">What's Happening</p>
+            <h2 id="posts-title">Latest from Alpha Hill</h2>
+            <div class="rule"></div>
+          </div>
+
+          <% if (posts.length === 0) { %>
+            <div class="news-empty">
+              <h3>No updates published yet</h3>
+              <p>
+                We are preparing our first announcements. In the meantime,
+                follow our activities by subscribing below, or
+                <a href="/contact">get in touch</a> with any questions.
+              </p>
+            </div>
+          <% } else { %>
+            <div class="grid grid--3">
+              <% posts.forEach(function (post) { %>
+                <article class="service-card news-card reveal">
+                  <% if (post.image_url) { %>
+                    <figure>
+                      <img
+                        src="<%= post.image_url %>"
+                        alt="<%= post.image_alt || post.title %>"
+                        loading="lazy"
+                      />
+                    </figure>
+                  <% } %>
+                  <div class="body">
+                    <p class="news-card__meta">
+                      <span class="news-tag"><%= post.category %></span>
+                      <time datetime="<%= (post.event_date || post.published_at) ? new Date(post.event_date || post.published_at).toISOString().slice(0, 10) : '' %>">
+                        <%= formatDate(post.event_date || post.published_at) %>
+                      </time>
+                    </p>
+                    <h3><%= post.title %></h3>
+                    <% if (post.location) { %>
+                      <p class="news-card__where">📍 <%= post.location %></p>
+                    <% } %>
+                    <p><%= post.excerpt %></p>
+                    <a class="card__link" href="/news/<%= post.slug %>">
+                      Read more
+                      <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M13 5l7 7-7 7-1.4-1.4 4.6-4.6H4v-2h12.2L11.6 6.4 13 5z" />
+                      </svg>
+                    </a>
+                  </div>
+                </article>
+              <% }); %>
+            </div>
+          <% } %>
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/public-footer') %>
+
+    <script src="/assets/js/main.js"></script>
+  </body>
+</html>

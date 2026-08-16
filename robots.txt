@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://alphahillmedical.co.ke/sitemap.xml

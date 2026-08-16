@@ -13,7 +13,7 @@ browser or drop it on any static host.
 
 ## ✨ Features
 
-- **Multi-page structure** generated from the project sitemap (`stiematandcontent.md`).
+- **Multi-page structure** generated from the project sitemap (`docs/stiematandcontent.md`).
 - **Fully responsive** — mobile-first layouts using CSS Grid, Flexbox and fluid `clamp()`
   typography; a hamburger menu on small screens.
 - **60-30-10 colour design system**
@@ -70,7 +70,7 @@ Alphahill Medical/
 ├── robots.txt
 ├── sitemap.xml
 ├── README.md
-├── stiematandcontent.md              # source sitemap + copy
+├── docs/stiematandcontent.md              # source sitemap + copy
 ├── alphahill_logo_white_transparent.png   # header/footer logo (white, on navy)
 ├── alphahillmedicallogo.png               # favicon / colour logo
 ├── assets/
@@ -140,7 +140,7 @@ white as the default page background, navy only for the header/footer/banner blo
 
 ## 📄 Content source
 
-All copy is drawn from **`stiematandcontent.md`**, the single source of truth for the site
+All copy is drawn from **`docs/stiematandcontent.md`**, the single source of truth for the site
 map, page content and colour palette.
 
 © Alpha Hill Medical Centre. Accredited by **SHA · KMPDC · NCK · PPB**.

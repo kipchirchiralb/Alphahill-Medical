@@ -1,0 +1,168 @@
+<%- include('partials/head') %>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="page-head">
+        <div>
+          <h1><%= isNew ? 'New post' : 'Edit post' %></h1>
+          <p>
+            Write in plain text — leave a blank line between paragraphs and they
+            will be laid out correctly on the public page.
+          </p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn--outline" href="/dashboard/news">Back to all posts</a>
+        </div>
+      </div>
+
+      <%- include('partials/flash') %>
+
+      <form
+        method="post"
+        action="<%= isNew ? '/dashboard/news' : '/dashboard/news/' + post.id %>"
+        enctype="multipart/form-data"
+      >
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <div class="form-grid">
+          <section class="card">
+            <div class="card__body">
+              <div class="field">
+                <label for="title">Title <span class="req">*</span></label>
+                <input
+                  type="text"
+                  id="title"
+                  name="title"
+                  maxlength="200"
+                  value="<%= post.title %>"
+                  required
+                  autofocus
+                />
+              </div>
+
+              <div class="field">
+                <label for="excerpt">
+                  Summary
+                  <span class="hint">— shown on the news listing. Left blank, we build one from the body.</span>
+                </label>
+                <textarea
+                  id="excerpt"
+                  name="excerpt"
+                  class="short"
+                  maxlength="300"
+                ><%= post.excerpt %></textarea>
+              </div>
+
+              <div class="field">
+                <label for="body">Body <span class="req">*</span></label>
+                <textarea id="body" name="body" required><%= post.body %></textarea>
+              </div>
+            </div>
+          </section>
+
+          <div>
+            <section class="card" style="margin-bottom: 1.25rem">
+              <div class="card__head"><h2>Publishing</h2></div>
+              <div class="card__body">
+                <div class="field">
+                  <label for="status">Status</label>
+                  <select id="status" name="status">
+                    <option value="draft" <%= post.status === 'draft' ? 'selected' : '' %>>
+                      Draft — not visible publicly
+                    </option>
+                    <option value="published" <%= post.status === 'published' ? 'selected' : '' %>>
+                      Published — live on the website
+                    </option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="category">Category</label>
+                  <select id="category" name="category">
+                    <% categories.forEach(function (category) { %>
+                      <option value="<%= category %>" <%= post.category === category ? 'selected' : '' %>>
+                        <%= category %>
+                      </option>
+                    <% }); %>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="event_date">
+                    Event date <span class="hint">— optional</span>
+                  </label>
+                  <input
+                    type="date"
+                    id="event_date"
+                    name="event_date"
+                    value="<%= toDateInput(post.event_date) %>"
+                  />
+                </div>
+
+                <div class="field" style="margin-bottom: 0">
+                  <label for="location">
+                    Location <span class="hint">— optional</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    maxlength="120"
+                    placeholder="e.g. Mosoriot Grounds"
+                    value="<%= post.location || '' %>"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section class="card">
+              <div class="card__head"><h2>Image</h2></div>
+              <div class="card__body">
+                <% if (post.image_url) { %>
+                  <img class="image-preview" src="<%= post.image_url %>" alt="" />
+                  <label class="checkbox" style="margin-bottom: .9rem">
+                    <input type="checkbox" name="remove_image" value="1" />
+                    Remove this image
+                  </label>
+                <% } %>
+
+                <div class="field">
+                  <label for="image">
+                    <%= post.image_url ? 'Replace image' : 'Upload image' %>
+                    <span class="hint">— JPG, PNG, WebP or GIF, up to 5 MB</span>
+                  </label>
+                  <input type="file" id="image" name="image" accept="image/*" />
+                </div>
+
+                <div class="field" style="margin-bottom: 0">
+                  <label for="image_alt">
+                    Image description
+                    <span class="hint">— for screen readers</span>
+                  </label>
+                  <input
+                    type="text"
+                    id="image_alt"
+                    name="image_alt"
+                    maxlength="200"
+                    value="<%= post.image_alt || '' %>"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <div class="form-actions" style="margin-top: 1.25rem">
+              <button class="btn btn--primary" type="submit">
+                <%= isNew ? 'Create post' : 'Save changes' %>
+              </button>
+              <a class="btn btn--outline" href="/dashboard/news">Cancel</a>
+            </div>
+          </div>
+        </div>
+      </form>
+    </main>
+  </div>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

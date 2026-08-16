@@ -1,0 +1,177 @@
+<%- include('partials/head') %>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="page-head">
+        <div>
+          <h1>Reviews</h1>
+          <p>
+            Reviews stay private until you approve them. Approved reviews appear
+            on the public Reviews page immediately, showing the reviewer's first
+            name and last initial only — never their email address or phone
+            number.
+          </p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn--outline" href="/reviews" target="_blank" rel="noopener noreferrer">
+            View public page
+          </a>
+          <a class="btn btn--outline" href="/dashboard/reviews/export.csv">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 3v10.6l3.3-3.3 1.4 1.4-5.7 5.7-5.7-5.7 1.4-1.4L10 13.6V3h2ZM4 19h16v2H4v-2Z" />
+            </svg>
+            Export CSV
+          </a>
+        </div>
+      </div>
+
+      <%- include('partials/flash') %>
+
+      <div class="filters">
+        <a href="/dashboard/reviews?state=pending" class="<%= filter === 'pending' ? 'is-active' : '' %>">
+          Awaiting approval <span class="count">(<%= tally.pending || 0 %>)</span>
+        </a>
+        <a href="/dashboard/reviews?state=approved" class="<%= filter === 'approved' ? 'is-active' : '' %>">
+          Approved &amp; live <span class="count">(<%= tally.approved || 0 %>)</span>
+        </a>
+        <a href="/dashboard/reviews?state=rejected" class="<%= filter === 'rejected' ? 'is-active' : '' %>">
+          Rejected <span class="count">(<%= tally.rejected || 0 %>)</span>
+        </a>
+      </div>
+
+      <% if (reviews.length === 0) { %>
+        <section class="card">
+          <div class="empty">
+            <h3>
+              <% if (filter === 'pending') { %>Nothing waiting for approval
+              <% } else if (filter === 'approved') { %>No approved reviews yet
+              <% } else { %>No rejected reviews
+              <% } %>
+            </h3>
+            <p>
+              <% if (filter === 'pending') { %>
+                New reviews submitted on the website will land here for you to
+                check before they go public.
+              <% } else if (filter === 'approved') { %>
+                Approve a pending review and it will show up on the public
+                Reviews page right away.
+              <% } else { %>
+                Reviews you reject are kept here for your records but are never
+                shown on the website.
+              <% } %>
+            </p>
+          </div>
+        </section>
+      <% } else { %>
+        <div class="review-list">
+          <% reviews.forEach(function (review) { %>
+            <article class="review-item">
+              <div class="review-item__top">
+                <span class="avatar" aria-hidden="true"><%= initials(review.name) %></span>
+                <div class="review-item__who">
+                  <div class="name">
+                    <%= review.name %>
+                    <span class="muted" style="font-weight: 400">
+                      → publishes as “<%= publicName(review.name) %>”
+                    </span>
+                  </div>
+                  <div class="meta">
+                    <%= formatDateTime(review.created_at) %>
+                    <% if (review.email) { %> · <%= review.email %><% } %>
+                    <% if (review.phone) { %> · <%= review.phone %><% } %>
+                  </div>
+                </div>
+                <span class="badge badge--<%= review.moderation %>"><%= review.moderation %></span>
+              </div>
+
+              <% if (review.rating) { %>
+                <p class="stars" role="img" aria-label="Rated <%= review.rating %> out of 5">
+                  <% for (let i = 1; i <= 5; i++) { %>
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="<%= i <= review.rating ? '' : 'off' %>" aria-hidden="true">
+                      <path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77 5.82 21l1.18-6.86-5-4.87 7.1-1.01L12 2z" />
+                    </svg>
+                  <% } %>
+                </p>
+              <% } %>
+
+              <blockquote><%= review.message %></blockquote>
+
+              <% if (!review.consent) { %>
+                <p class="consent-warning">
+                  <strong>No publishing consent.</strong>
+                  This reviewer did not tick the box agreeing to have their
+                  review shown on the website. Treat it as private feedback
+                  unless you have asked them directly.
+                </p>
+              <% } %>
+
+              <form method="post" action="/dashboard/reviews/<%= review.id %>/moderation">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                <input type="hidden" name="redirect_to" value="/dashboard/reviews?state=<%= filter %>" />
+
+                <div class="caption-fields">
+                  <div class="field">
+                    <label for="service-<%= review.id %>">
+                      Service <span class="hint">— shown under the name</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="service-<%= review.id %>"
+                      name="service"
+                      maxlength="100"
+                      placeholder="e.g. Maternity patient"
+                      value="<%= review.service || '' %>"
+                    />
+                  </div>
+                  <div class="field">
+                    <label for="location-<%= review.id %>">
+                      Location <span class="hint">— optional</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="location-<%= review.id %>"
+                      name="location"
+                      maxlength="100"
+                      placeholder="e.g. Mosoriot"
+                      value="<%= review.location || '' %>"
+                    />
+                  </div>
+
+                  <div class="decision-row">
+                    <% if (review.moderation !== 'approved') { %>
+                      <button
+                        class="btn btn--primary btn--sm"
+                        type="submit"
+                        name="decision"
+                        value="approved"
+                        <% if (!review.consent) { %>
+                          data-confirm="This reviewer did not consent to publication. Publish anyway?"
+                        <% } %>
+                      >
+                        Approve &amp; publish
+                      </button>
+                    <% } %>
+                    <% if (review.moderation !== 'rejected') { %>
+                      <button class="btn btn--danger btn--sm" type="submit" name="decision" value="rejected">
+                        Reject
+                      </button>
+                    <% } %>
+                    <% if (review.moderation !== 'pending') { %>
+                      <button class="btn btn--outline btn--sm" type="submit" name="decision" value="pending">
+                        <%= review.moderation === 'approved' ? 'Unpublish' : 'Move to pending' %>
+                      </button>
+                    <% } %>
+                  </div>
+                </div>
+              </form>
+            </article>
+          <% }); %>
+        </div>
+      <% } %>
+    </main>
+  </div>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

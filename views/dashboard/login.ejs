@@ -1,0 +1,51 @@
+<%- include('partials/head') %>
+<body class="login-page">
+  <main class="login-card">
+    <img
+      class="brand-mark"
+      src="/alphahillmedicallogo.png"
+      alt="Alpha Hill Medical Centre"
+    />
+    <h1>Staff Dashboard</h1>
+    <p class="sub">Sign in to manage news, submissions and reviews.</p>
+
+    <% if (error) { %>
+      <div class="alert alert--error" role="alert"><span><%= error %></span></div>
+    <% } %>
+
+    <form method="post" action="/dashboard/login" autocomplete="on">
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+      <div class="field">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          name="username"
+          autocomplete="username"
+          required
+          autofocus
+        />
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          autocomplete="current-password"
+          required
+        />
+      </div>
+
+      <button class="btn btn--primary" type="submit">Sign in</button>
+    </form>
+
+    <p class="login-foot">
+      This area is private and is not indexed by search engines.<br />
+      <a href="/">Return to the public website</a>
+    </p>
+  </main>
+</body>
+</html>

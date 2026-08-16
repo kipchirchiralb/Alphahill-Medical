@@ -1,0 +1,418 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Patient Information &amp; FAQ | Alpha Hill Medical Centre</title>
+    <meta
+      name="description"
+      content="Patient information for Alpha Hill Medical Centre: what to bring on your visit, visiting details and answers to frequently asked questions about opening hours, referrals, SHA and payment."
+    />
+    <link rel="canonical" href="https://alphahillmedical.co.ke/patients" />
+    <meta name="theme-color" content="#001F5D" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Alpha Hill Medical Centre" />
+    <meta
+      property="og:title"
+      content="Patient Information & FAQ | Alpha Hill Medical Centre"
+    />
+    <meta
+      property="og:description"
+      content="What to bring, visiting details and frequently asked questions."
+    />
+    <meta
+      property="og:image"
+      content="https://alphahillmedical.co.ke/images/ward room.jpeg"
+    />
+    <meta
+      property="og:url"
+      content="https://alphahillmedical.co.ke/patients"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="icon" type="image/png" href="alphahillmedicallogo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+
+    <!-- FAQ + page structured data for SEO / AI answer engines -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": ["Hospital", "MedicalClinic"],
+            "@id": "https://alphahillmedical.co.ke/#organization",
+            "name": "Alpha Hill Medical Centre",
+            "url": "https://alphahillmedical.co.ke/",
+            "logo": "https://alphahillmedical.co.ke/alphahillmedicallogo.png",
+            "telephone": "+254722865459",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": "Along Mosoriot – Kabiyet Road",
+              "addressLocality": "Mosoriot",
+              "addressRegion": "Nandi County",
+              "postalCode": "30100",
+              "addressCountry": "KE"
+            },
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 0.3211582,
+              "longitude": 35.1600144
+            },
+            "openingHours": "Mo-Su 00:00-23:59"
+          },
+          {
+            "@type": "FAQPage",
+            "@id": "https://alphahillmedical.co.ke/patients#webpage",
+            "url": "https://alphahillmedical.co.ke/patients",
+            "name": "Patient Information & FAQ | Alpha Hill Medical Centre",
+            "about": { "@id": "https://alphahillmedical.co.ke/#organization" },
+            "inLanguage": "en",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "Are you open on weekends and holidays?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes. Our emergency, laboratory and pharmacy services operate 24 hours a day, every day of the year."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do I need a referral to see a specialist?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "No referral is required for outpatient consultations. Walk in or call ahead to book."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Do you accept SHA?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Yes — we are SHA-accredited, alongside AAR, MUA, M-TIBA and First Assurance."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "How do I pay if I don't have insurance?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "We offer affordable cash rates for all services, in line with our mission of accessible care."
+                }
+              },
+              {
+                "@type": "Question",
+                "name": "Where are you located?",
+                "acceptedAnswer": {
+                  "@type": "Answer",
+                  "text": "Along Mosoriot – Kabiyet Road, Mosoriot, Nandi County. See our Contact page for directions."
+                }
+              }
+            ]
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://alphahillmedical.co.ke/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Patient Information",
+                "item": "https://alphahillmedical.co.ke/patients"
+              }
+            ]
+          }
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <%- include('partials/public-header', { current: 'patients' }) %>
+
+    <main id="main">
+      <section class="page-hero" aria-labelledby="page-title">
+        <div class="page-hero__bg">
+          <img
+            src="images/ward room.jpeg"
+            alt="A comfortable patient ward at Alpha Hill Medical Centre"
+          />
+        </div>
+        <div class="container">
+          <p class="breadcrumb">
+            <a href="/">Home</a><span>/</span>Patient Information
+          </p>
+          <h1 id="page-title">Patient Information</h1>
+          <p>
+            Everything you need to know before your visit — so you can focus on
+            getting well.
+          </p>
+        </div>
+      </section>
+
+      <!-- What to bring -->
+      <section class="section" aria-labelledby="bring-title">
+        <div class="container split">
+          <div class="reveal">
+            <p class="eyebrow">Before You Arrive</p>
+            <h2 id="bring-title">What to Bring on Your Visit</h2>
+            <ul class="check-list">
+              <li><span>National ID or passport</span></li>
+              <li><span>Insurance card / SHA details (if applicable)</span></li>
+              <li>
+                <span
+                  >Any previous medical records, prescriptions or referral
+                  letters</span
+                >
+              </li>
+              <li><span>A list of your current medications</span></li>
+            </ul>
+            <p>
+              Our emergency, laboratory and pharmacy services are open 24 hours
+              a day, every day of the year. No referral is required for
+              outpatient consultations.
+            </p>
+            <a class="btn btn--outline" href="/contact">Get Directions</a>
+          </div>
+          <div class="split__media reveal">
+            <img
+              src="images/nurse station materninty.jpeg"
+              alt="Nurses at the reception station ready to assist patients"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="section section--grey" aria-labelledby="faq-title">
+        <div class="container">
+          <div class="section-head">
+            <p class="eyebrow">Good to Know</p>
+            <h2 id="faq-title">Frequently Asked Questions</h2>
+            <div class="rule"></div>
+          </div>
+          <div class="faq">
+            <details open>
+              <summary>Are you open on weekends and holidays?</summary>
+              <p>
+                Yes. Our emergency, laboratory and pharmacy services operate 24
+                hours a day, every day of the year.
+              </p>
+            </details>
+            <details>
+              <summary>Do I need a referral to see a specialist?</summary>
+              <p>
+                No referral is required for outpatient consultations. Walk in or
+                call ahead to book.
+              </p>
+            </details>
+            <details>
+              <summary>Do you accept SHA?</summary>
+              <p>
+                Yes — we are SHA-accredited, alongside AAR, MUA, M-TIBA and
+                First Assurance. See our
+                <a href="/insurance">Insurance page</a> for details.
+              </p>
+            </details>
+            <details>
+              <summary>How do I pay if I don't have insurance?</summary>
+              <p>
+                We offer affordable cash rates for all services, in line with
+                our mission of accessible care.
+              </p>
+            </details>
+            <details>
+              <summary>Where are you located?</summary>
+              <p>
+                Along Mosoriot – Kabiyet Road, Mosoriot, Nandi County. See our
+                <a href="/contact">Contact page</a> for directions and a map.
+              </p>
+            </details>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== BOOK AN APPOINTMENT ==================== -->
+      <section class="section" id="book" aria-labelledby="book-title">
+        <div class="container">
+          <div class="contact-grid">
+            <div class="reveal">
+              <p class="eyebrow">Plan Your Visit</p>
+              <h2 id="book-title" style="font-size: clamp(1.6rem, 3.5vw, 2.2rem)">
+                Book an Appointment
+              </h2>
+              <p class="lead">
+                Request a convenient date and time and our team will call you to
+                confirm. Walk-in patients are always welcome, and our emergency
+                department is open 24 hours.
+              </p>
+              <ul class="check-list" style="margin-top: 1.5rem">
+                <li><span>Requests are confirmed by phone during working hours.</span></li>
+                <li><span>Bring your ID and SHA or insurance card to your visit.</span></li>
+                <li>
+                  <span
+                    >For emergencies do not book online — call
+                    <a href="tel:+254722865459">+254 722 865 459</a>
+                    immediately.</span
+                  >
+                </li>
+              </ul>
+            </div>
+
+            <div class="reveal">
+              <p class="eyebrow">Appointment Request</p>
+              <h2 style="font-size: clamp(1.6rem, 3.5vw, 2.2rem)">Your Details</h2>
+              <form id="appointment-form" class="form" novalidate>
+                <div class="row">
+                  <div class="field">
+                    <label for="a-name"
+                      >Patient Name
+                      <span class="req" aria-hidden="true">*</span></label
+                    >
+                    <input
+                      type="text"
+                      id="a-name"
+                      name="patient_name"
+                      autocomplete="name"
+                      required
+                    />
+                  </div>
+                  <div class="field">
+                    <label for="a-phone"
+                      >Phone Number
+                      <span class="req" aria-hidden="true">*</span></label
+                    >
+                    <input
+                      type="tel"
+                      id="a-phone"
+                      name="phone"
+                      autocomplete="tel"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="a-email"
+                    >Email
+                    <span style="font-weight: 400; color: var(--muted)"
+                      >(optional)</span
+                    ></label
+                  >
+                  <input
+                    type="email"
+                    id="a-email"
+                    name="email"
+                    autocomplete="email"
+                  />
+                </div>
+
+                <div class="row">
+                  <div class="field">
+                    <label for="a-date"
+                      >Preferred Date
+                      <span class="req" aria-hidden="true">*</span></label
+                    >
+                    <input type="date" id="a-date" name="date_preferred" required />
+                  </div>
+                  <div class="field">
+                    <label for="a-time"
+                      >Preferred Time
+                      <span class="req" aria-hidden="true">*</span></label
+                    >
+                    <input type="time" id="a-time" name="time_preferred" required />
+                  </div>
+                </div>
+
+                <div class="field">
+                  <label for="a-service"
+                    >Service Needed
+                    <span class="req" aria-hidden="true">*</span></label
+                  >
+                  <select id="a-service" name="service" required>
+                    <option value="">Select a service…</option>
+                    <option>General Consultation</option>
+                    <option>Maternity Services</option>
+                    <option>Major &amp; Minor Surgeries</option>
+                    <option>CT Scan Services</option>
+                    <option>X-Ray Services</option>
+                    <option>Ultrasound Services</option>
+                    <option>Endoscopy &amp; Colonoscopy</option>
+                    <option>Dental Services</option>
+                    <option>Eyecare / Optometry</option>
+                    <option>Dialysis Services</option>
+                    <option>Physiotherapy</option>
+                    <option>Laboratory Tests</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="a-notes"
+                    >Additional Notes
+                    <span style="font-weight: 400; color: var(--muted)"
+                      >(optional)</span
+                    ></label
+                  >
+                  <textarea
+                    id="a-notes"
+                    name="notes"
+                    placeholder="Anything our team should know before your visit."
+                  ></textarea>
+                </div>
+
+                <button class="btn btn--primary" type="submit">
+                  Request Appointment
+                </button>
+                <p
+                  id="appointment-status"
+                  class="form-status"
+                  role="status"
+                  aria-live="polite"
+                ></p>
+                <p class="form-note">
+                  This is a request, not a confirmed booking. We will call you to
+                  confirm the exact time.
+                </p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CTA -->
+      <section class="section section--navy" aria-labelledby="cta-title">
+        <div class="container text-center">
+          <h2 id="cta-title">Still have a question?</h2>
+          <p
+            style="
+              color: var(--on-navy-dim);
+              max-width: 600px;
+              margin: 0 auto 1.5rem;
+            "
+          >
+            Our team is glad to help you, 24 hours a day, 7 days a week.
+          </p>
+          <a class="arrow-link" href="/contact" style="color: #fff"
+            >Get in touch →</a
+          >
+        </div>
+      </section>
+    </main>
+
+    <%- include('partials/public-footer') %>
+
+    <script src="/assets/js/main.js"></script>
+  </body>
+</html>

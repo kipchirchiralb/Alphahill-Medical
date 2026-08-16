@@ -1,0 +1,120 @@
+<%- include('partials/head') %>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="page-head">
+        <div>
+          <h1><%= type.label %></h1>
+          <p><%= type.description %></p>
+        </div>
+        <div class="head-actions">
+          <a class="btn btn--outline" href="/dashboard/submissions/<%= typeSlug %>/export.csv">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M12 3v10.6l3.3-3.3 1.4 1.4-5.7 5.7-5.7-5.7 1.4-1.4L10 13.6V3h2ZM4 19h16v2H4v-2Z" />
+            </svg>
+            Export CSV
+          </a>
+        </div>
+      </div>
+
+      <%- include('partials/flash') %>
+
+      <div class="filters">
+        <a href="/dashboard/submissions/<%= typeSlug %>" class="<%= filter === 'all' ? 'is-active' : '' %>">
+          All <span class="count">(<%= tally.total || 0 %>)</span>
+        </a>
+        <a href="/dashboard/submissions/<%= typeSlug %>?status=new" class="<%= filter === 'new' ? 'is-active' : '' %>">
+          New <span class="count">(<%= tally.new_count || 0 %>)</span>
+        </a>
+        <a href="/dashboard/submissions/<%= typeSlug %>?status=read" class="<%= filter === 'read' ? 'is-active' : '' %>">
+          Read <span class="count">(<%= tally.read_count || 0 %>)</span>
+        </a>
+        <a href="/dashboard/submissions/<%= typeSlug %>?status=handled" class="<%= filter === 'handled' ? 'is-active' : '' %>">
+          Handled <span class="count">(<%= tally.handled_count || 0 %>)</span>
+        </a>
+      </div>
+
+      <section class="card">
+        <% if (rows.length === 0) { %>
+          <div class="empty">
+            <h3>No <%= type.singular %> records<%= filter === 'all' ? '' : ' with this status' %></h3>
+            <p>
+              <% if (filter === 'all') { %>
+                As soon as someone submits the form on the website, it will
+                appear here.
+              <% } else { %>
+                Try a different filter to see the rest of the <%= type.label.toLowerCase() %>.
+              <% } %>
+            </p>
+          </div>
+        <% } else { %>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th class="nowrap">Received</th>
+                  <% type.columns.forEach(function (column) { %>
+                    <th><%= column.label %></th>
+                  <% }); %>
+                  <th>Status</th>
+                  <th>Mark as</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% rows.forEach(function (row) { %>
+                  <tr class="<%= row.status === 'new' ? 'is-unread' : '' %>">
+                    <td class="nowrap muted"><%= formatDateTime(row.created_at) %></td>
+
+                    <% type.columns.forEach(function (column, index) { %>
+                      <td>
+                        <% const value = row[column.key]; %>
+                        <% if (!value) { %>
+                          <span class="muted">—</span>
+                        <% } else if (column.wide) { %>
+                          <span class="longtext"><%= value %></span>
+                        <% } else if (column.type === 'date') { %>
+                          <span class="nowrap"><%= formatDate(value) %></span>
+                        <% } else if (column.key === 'email') { %>
+                          <a href="mailto:<%= value %>"><%= value %></a>
+                        <% } else if (column.key === 'phone') { %>
+                          <a class="nowrap" href="tel:<%= String(value).replace(/\s+/g, '') %>"><%= value %></a>
+                        <% } else if (index === 0) { %>
+                          <span class="primary-text"><%= value %></span>
+                        <% } else { %>
+                          <%= value %>
+                        <% } %>
+                      </td>
+                    <% }); %>
+
+                    <td><span class="badge badge--<%= row.status %>"><%= row.status %></span></td>
+
+                    <td>
+                      <div class="row-actions">
+                        <% statuses.filter(function (s) { return s !== row.status; }).forEach(function (status) { %>
+                          <form class="inline-form" method="post" action="/dashboard/submissions/<%= typeSlug %>/<%= row.id %>/status">
+                            <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+                            <input type="hidden" name="status" value="<%= status %>" />
+                            <input
+                              type="hidden"
+                              name="redirect_to"
+                              value="/dashboard/submissions/<%= typeSlug %><%= filter === 'all' ? '' : '?status=' + filter %>"
+                            />
+                            <button class="btn btn--outline btn--sm" type="submit"><%= status %></button>
+                          </form>
+                        <% }); %>
+                      </div>
+                    </td>
+                  </tr>
+                <% }); %>
+              </tbody>
+            </table>
+          </div>
+        <% } %>
+      </section>
+    </main>
+  </div>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

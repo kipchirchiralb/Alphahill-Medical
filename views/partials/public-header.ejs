@@ -1,0 +1,46 @@
+<script>
+  document.documentElement.classList.add("js");
+</script>
+<a class="skip-link" href="#main">Skip to main content</a>
+
+<div class="topbar">
+  <div class="container">
+    <a href="tel:+254722865459">☎ +254 722 865 459</a>
+    <a href="mailto:alphahillmedical@gmail.com">✉ alphahillmedical@gmail.com</a>
+    <span><span class="dot">●</span> Open 24 / 7</span>
+  </div>
+</div>
+
+<header class="site-header">
+  <nav class="container nav" aria-label="Primary">
+    <a class="brand" href="/" aria-label="Alpha Hill Medical Centre — home">
+      <img
+        src="/alphahill_logo_white_transparent.png"
+        alt="Alpha Hill Medical Centre logo"
+      />
+    </a>
+    <button
+      class="nav-toggle"
+      aria-label="Toggle menu"
+      aria-expanded="false"
+      aria-controls="nav-links"
+    >
+      <span></span><span></span><span></span>
+    </button>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="/" aria-current="<%= current === 'home' ? 'page' : 'false' %>">Home</a></li>
+      <li><a href="/about" aria-current="<%= current === 'about' ? 'page' : 'false' %>">About Us</a></li>
+      <li><a href="/services" aria-current="<%= current === 'services' ? 'page' : 'false' %>">Services</a></li>
+      <li><a href="/insurance" aria-current="<%= current === 'insurance' ? 'page' : 'false' %>">Insurance</a></li>
+      <li><a href="/patients" aria-current="<%= current === 'patients' ? 'page' : 'false' %>">Patients</a></li>
+      <li><a href="/news" aria-current="<%= current === 'news' ? 'page' : 'false' %>">News &amp; Events</a></li>
+      <li><a href="/careers" aria-current="<%= current === 'careers' ? 'page' : 'false' %>">Careers</a></li>
+      <li><a href="/contact" aria-current="<%= current === 'contact' ? 'page' : 'false' %>">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<div class="ribbon" role="note">
+  24/7 emergency &amp; ambulance:
+  <a href="tel:+254722865459">+254 722 865 459</a>
+</div>

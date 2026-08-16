@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Allow: /privacy
+Allow: /cookies
+
+# Private staff area — never index.
+Disallow: /dashboard
+Disallow: /dashboard/
+
+Sitemap: https://alphahillmedical.co.ke/sitemap.xml

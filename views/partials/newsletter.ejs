@@ -1,0 +1,24 @@
+<form class="f-subscribe" id="subscribe-form" novalidate>
+  <label for="subscribe-email">Stay updated</label>
+  <p class="f-subscribe__hint">
+    Get news, medical camps and events straight to your inbox.
+  </p>
+  <div class="f-subscribe__row">
+    <input
+      type="email"
+      id="subscribe-email"
+      name="email"
+      placeholder="Your email address"
+      autocomplete="email"
+      aria-label="Your email address"
+      required
+    />
+    <button class="btn btn--primary" type="submit">Subscribe</button>
+  </div>
+  <p
+    class="form-status"
+    id="subscribe-status"
+    role="status"
+    aria-live="polite"
+  ></p>
+</form>
