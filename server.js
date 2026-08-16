@@ -10,6 +10,16 @@ dotenv.config();
 
 const { noIndexNoTrack } = require("./middleware/privacy");
 const { trackPageview } = require("./middleware/analytics");
+const {
+  publicSecurityHeaders,
+  assertSessionSecret,
+  assertDatabaseEnv,
+} = require("./middleware/security");
+const { SESSION_MS } = require("./lib/otp");
+const { isConfigured: isMailConfigured } = require("./lib/mailer");
+
+assertDatabaseEnv();
+assertSessionSecret();
 
 const app = express();
 const isProduction = process.env.NODE_ENV === "production";
@@ -45,17 +55,24 @@ app.use(
     secret: process.env.SESSION_SECRET || "change-me-in-env",
     store: sessionStore,
     resave: false,
+    rolling: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
       sameSite: "lax",
       secure: isProduction,
-      maxAge: 8 * 60 * 60 * 1000,
+      maxAge: SESSION_MS,
     },
-  })
+  }),
 );
 
-app.use(express.static(path.join(__dirname, "public")));
+app.use(publicSecurityHeaders);
+app.use(
+  express.static(path.join(__dirname, "public"), {
+    maxAge: isProduction ? "7d" : 0,
+    etag: true,
+  })
+);
 
 // First-party pageviews only run after cookie consent, and never on the
 // dashboard or static assets.
@@ -91,7 +108,12 @@ app.use((err, req, res, next) => {
 
 // Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server is running on port ${PORT}`);
   console.log(`Dashboard available at http://localhost:${PORT}/dashboard`);
+  if (!isMailConfigured()) {
+    console.warn(
+      "SMTP is not configured. Dashboard sign-in codes cannot be emailed until SMTP_HOST, SMTP_USER and SMTP_PASS are set."
+    );
+  }
 });

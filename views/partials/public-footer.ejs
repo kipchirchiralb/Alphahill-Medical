@@ -166,5 +166,10 @@
         return;
       }
     }
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        banner.classList.add("is-in");
+      });
+    });
   })();
 </script>

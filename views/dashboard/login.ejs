@@ -7,40 +7,70 @@
       alt="Alpha Hill Medical Centre"
     />
     <h1>Staff Dashboard</h1>
-    <p class="sub">Sign in to manage news, submissions and reviews.</p>
+    <p class="sub">
+      <% if (pendingEmail) { %>
+        Enter the 8-character code we sent to your email. Each code works once and this sign-in lasts two days.
+      <% } else { %>
+        Sign in with your Alpha Hill work email. We will send a one-time 8-character code.
+      <% } %>
+    </p>
 
     <% if (error) { %>
       <div class="alert alert--error" role="alert"><span><%= error %></span></div>
     <% } %>
+    <% if (notice) { %>
+      <div class="alert alert--success" role="status"><span><%= notice %></span></div>
+    <% } %>
 
-    <form method="post" action="/dashboard/login" autocomplete="on">
-      <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+    <% if (pendingEmail) { %>
+      <form method="post" action="/dashboard/login/verify" autocomplete="off">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
 
-      <div class="field">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          name="username"
-          autocomplete="username"
-          required
-          autofocus
-        />
-      </div>
+        <div class="field">
+          <label for="code">Sign-in code</label>
+          <input
+            class="otp-input"
+            type="text"
+            id="code"
+            name="code"
+            inputmode="text"
+            autocomplete="one-time-code"
+            autocapitalize="characters"
+            spellcheck="false"
+            maxlength="9"
+            placeholder="ABCD-EFGH"
+            required
+            autofocus
+          />
+          <p class="hint">Check the inbox for <%= pendingEmail %>. Codes expire after 10 minutes.</p>
+        </div>
 
-      <div class="field">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          autocomplete="current-password"
-          required
-        />
-      </div>
+        <button class="btn btn--primary" type="submit">Verify and sign in</button>
+      </form>
 
-      <button class="btn btn--primary" type="submit">Sign in</button>
-    </form>
+      <p class="login-foot">
+        Wrong address?
+        <a href="/dashboard/login?reset=1">Use a different email</a>
+      </p>
+    <% } else { %>
+      <form method="post" action="/dashboard/login" autocomplete="on">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+
+        <div class="field">
+          <label for="email">Work email</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            autocomplete="username"
+            required
+            autofocus
+          />
+        </div>
+
+        <button class="btn btn--primary" type="submit">Send sign-in code</button>
+      </form>
+    <% } %>
 
     <p class="login-foot">
       This area is private and is not indexed by search engines.<br />

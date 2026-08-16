@@ -1,5 +1,18 @@
 <% if (flash) { %>
-  <div class="alert alert--<%= flash.type %>" role="status">
-    <span><%= flash.message %></span>
+<div
+  class="dash-toast"
+  id="dash-toast"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="dash-toast-title"
+  aria-describedby="dash-toast-text"
+>
+  <div class="dash-toast__card dash-toast__card--<%= flash.type === 'error' ? 'error' : 'success' %>">
+    <h2 id="dash-toast-title">
+      <%= flash.type === 'error' ? 'Something went wrong' : 'Done' %>
+    </h2>
+    <p id="dash-toast-text"><%= flash.message %></p>
+    <button type="button" class="btn btn--primary" id="dash-toast-ok">OK</button>
   </div>
+</div>
 <% } %>

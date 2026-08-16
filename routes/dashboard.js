@@ -2,8 +2,8 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const crypto = require("crypto");
-const bcrypt = require("bcryptjs");
 const multer = require("multer");
+const { issueAndSend, verifyCode, normalizeEmail } = require("../lib/otp");
 
 const db = require("../config/database");
 const {
@@ -230,57 +230,119 @@ router.use(withViewDefaults);
    Authentication
    -------------------------------------------------------------------------- */
 
-router.get("/login", redirectIfAuthed, (req, res) => {
-  res.render("dashboard/login", {
+function renderLogin(res, extras = {}) {
+  const status = extras.status || 200;
+  res.status(status).render("dashboard/login", {
     title: "Sign in | Alpha Hill Dashboard",
-    error: null,
+    error: extras.error || null,
+    notice: extras.notice || null,
+    pendingEmail: extras.pendingEmail || null,
   });
+}
+
+router.get("/login", redirectIfAuthed, (req, res) => {
+  if (req.query.reset === "1") {
+    delete req.session.pendingEmail;
+    return req.session.save(() => res.redirect("/dashboard/login"));
+  }
+
+  renderLogin(res, { pendingEmail: req.session.pendingEmail || null });
 });
 
-router.post("/login", redirectIfAuthed, verifyCsrf, (req, res) => {
-  const renderError = (error) =>
-    res.status(401).render("dashboard/login", {
-      title: "Sign in | Alpha Hill Dashboard",
+router.post("/login", redirectIfAuthed, verifyCsrf, async (req, res) => {
+  if (isLockedOut(req)) {
+    return renderLogin(res, {
+      status: 429,
+      error: `Too many attempts. Please try again in ${LOCKOUT_MINUTES} minutes.`,
+      pendingEmail: req.session.pendingEmail || null,
+    });
+  }
+
+  const email = normalizeEmail(req.body.email);
+
+  if (!email) {
+    return renderLogin(res, {
+      status: 400,
+      error: "Enter the work email address you use at Alpha Hill.",
+    });
+  }
+
+  try {
+    await issueAndSend(email);
+  } catch (error) {
+    console.error("OTP email:", error.message);
+    if (error.code === "SMTP_NOT_CONFIGURED") {
+      return renderLogin(res, {
+        status: 500,
+        error:
+          "Sign-in email is not configured yet. Add SMTP_HOST, SMTP_USER and SMTP_PASS to .env.",
+      });
+    }
+    return renderLogin(res, {
+      status: 500,
+      error: "We could not send the sign-in email. Please try again shortly.",
+    });
+  }
+
+  req.session.pendingEmail = email;
+  return req.session.save(() =>
+    renderLogin(res, {
+      pendingEmail: email,
+      notice:
+        "If this address is authorised, we have sent an 8-character code. It expires in 10 minutes.",
+    })
+  );
+});
+
+router.post("/login/verify", redirectIfAuthed, verifyCsrf, async (req, res) => {
+  const pendingEmail = req.session.pendingEmail;
+
+  const fail = (error) =>
+    renderLogin(res, {
+      status: 401,
       error,
+      pendingEmail: pendingEmail || null,
     });
 
   if (isLockedOut(req)) {
-    return renderError(
-      `Too many failed attempts. Please try again in ${LOCKOUT_MINUTES} minutes.`
+    return fail(
+      `Too many attempts. Please try again in ${LOCKOUT_MINUTES} minutes.`
     );
   }
 
-  const { username = "", password = "" } = req.body;
-  const expectedUser = process.env.ADMIN_USERNAME;
-  const expectedHash = process.env.ADMIN_PASSWORD_HASH;
-
-  if (!expectedUser || !expectedHash) {
-    return res.status(500).render("dashboard/login", {
-      title: "Sign in | Alpha Hill Dashboard",
-      error:
-        "The dashboard is not configured yet. Set ADMIN_USERNAME and ADMIN_PASSWORD_HASH in .env.",
+  if (!pendingEmail) {
+    return renderLogin(res, {
+      status: 400,
+      error: "Start by requesting a sign-in code.",
     });
   }
 
-  const userMatches = username.trim().toLowerCase() === expectedUser.toLowerCase();
-  // Always run the hash comparison so a wrong username and a wrong password
-  // take the same amount of time.
-  const passwordMatches = bcrypt.compareSync(password, expectedHash);
+  let user;
+  try {
+    user = await verifyCode(pendingEmail, req.body.code);
+  } catch (error) {
+    console.error("OTP verify:", error.message);
+    return fail("We could not check that code. Please try again.");
+  }
 
-  if (!userMatches || !passwordMatches) {
+  if (!user) {
     recordFailedAttempt(req);
-    return renderError("Incorrect username or password.");
+    return fail("That code is incorrect or has expired. Request a new one.");
   }
 
   clearAttempts(req);
 
   const returnTo = req.session.returnTo;
 
-  // A fresh session id on login closes off session fixation.
   return req.session.regenerate((error) => {
-    if (error) return renderError("Could not start a session. Please try again.");
+    if (error) return fail("Could not start a session. Please try again.");
 
-    req.session.user = { name: expectedUser, signedInAt: new Date() };
+    req.session.user = {
+      email: user.email,
+      name: user.name,
+      signedInAt: new Date().toISOString(),
+    };
+
     return req.session.save(() => res.redirect(returnTo || "/dashboard"));
   });
 });

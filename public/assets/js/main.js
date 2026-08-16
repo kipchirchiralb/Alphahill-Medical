@@ -7,16 +7,20 @@
   var toggle = document.querySelector(".nav-toggle");
   var links = document.getElementById("nav-links");
 
-  function closeNav() {
+  function setNavOpen(open) {
     if (!toggle || !links) return;
-    links.classList.remove("open");
-    toggle.setAttribute("aria-expanded", "false");
+    links.classList.toggle("open", open);
+    toggle.classList.toggle("is-open", open);
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+
+  function closeNav() {
+    setNavOpen(false);
   }
 
   if (toggle && links) {
     toggle.addEventListener("click", function () {
-      var open = links.classList.toggle("open");
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      setNavOpen(!links.classList.contains("open"));
     });
     links.addEventListener("click", function (e) {
       if (e.target.closest("a")) closeNav();
@@ -83,6 +87,61 @@
     return value ? " " + String(value).trim().split(/\s+/)[0] : "";
   }
 
+  function ensureToast() {
+    var root = document.getElementById("site-toast");
+    if (root) return root;
+
+    root = document.createElement("div");
+    root.id = "site-toast";
+    root.className = "site-toast";
+    root.hidden = true;
+    root.setAttribute("role", "dialog");
+    root.setAttribute("aria-modal", "true");
+    root.setAttribute("aria-labelledby", "site-toast-title");
+    root.setAttribute("aria-describedby", "site-toast-text");
+    root.innerHTML =
+      '<div class="site-toast__card">' +
+      '<div class="site-toast__icon" aria-hidden="true"></div>' +
+      '<h2 id="site-toast-title"></h2>' +
+      '<p id="site-toast-text"></p>' +
+      '<button type="button" class="btn btn--primary" id="site-toast-ok">OK</button>' +
+      "</div>";
+    document.body.appendChild(root);
+
+    var close = function () {
+      root.hidden = true;
+      document.body.style.overflow = "";
+    };
+
+    root.querySelector("#site-toast-ok").addEventListener("click", close);
+    root.addEventListener("click", function (event) {
+      if (event.target === root) close();
+    });
+    document.addEventListener("keydown", function (event) {
+      if (!root.hidden && event.key === "Escape") close();
+    });
+
+    return root;
+  }
+
+  function showToast(type, title, message) {
+    var root = ensureToast();
+    var card = root.querySelector(".site-toast__card");
+    var icon = root.querySelector(".site-toast__icon");
+    card.className =
+      "site-toast__card site-toast__card--" +
+      (type === "error" ? "error" : "success");
+    icon.innerHTML =
+      type === "error"
+        ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm1 14h-2v-2h2Zm0-4h-2V7h2Z"/></svg>'
+        : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm-1.2 14.2-4.2-4.2 1.4-1.4 2.8 2.8 6-6 1.4 1.4Z"/></svg>';
+    root.querySelector("#site-toast-title").textContent = title;
+    root.querySelector("#site-toast-text").textContent = message;
+    root.hidden = false;
+    document.body.style.overflow = "hidden";
+    root.querySelector("#site-toast-ok").focus();
+  }
+
   /**
    * Wires a form to an API endpoint.
    *
@@ -108,6 +167,7 @@
         var problem = opts.validate(data, formEl);
         if (problem) {
           setStatus(statusEl, problem, "error");
+          showToast("error", "Please check the form", problem);
           return;
         }
       }
@@ -136,16 +196,17 @@
               result.payload.error || "Something went wrong. Please try again."
             );
           }
-          setStatus(statusEl, opts.success(data), "ok");
+          var okMessage = opts.success(data);
+          setStatus(statusEl, okMessage, "ok");
           formEl.reset();
+          showToast("success", "Thank you", okMessage);
         })
         .catch(function (error) {
-          setStatus(
-            statusEl,
+          var failMessage =
             error.message ||
-              "We could not send your message. Please try again, or call +254 722 865 459.",
-            "error"
-          );
+            "We could not send your message. Please try again, or call +254 722 865 459.";
+          setStatus(statusEl, failMessage, "error");
+          showToast("error", "Something went wrong", failMessage);
         })
         .finally(function () {
           if (button) {
@@ -374,15 +435,23 @@
         }),
       })
         .then(function (response) {
-          return response.json().catch(function () {
-            return {};
+          return response.json().then(function (payload) {
+            return { ok: response.ok, payload: payload };
           });
         })
-        .then(function () {
+        .then(function (result) {
+          if (!result.ok || !result.payload.success) {
+            throw new Error("Could not save cookie choice");
+          }
+          cookieBanner.classList.remove("is-in");
           cookieBanner.hidden = true;
         })
         .catch(function () {
-          cookieBanner.hidden = true;
+          showToast(
+            "error",
+            "Please try again",
+            "We could not save your cookie choice. Please tap Accept or Decline again."
+          );
         });
     });
   }

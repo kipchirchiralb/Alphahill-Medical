@@ -106,6 +106,19 @@ CREATE TABLE IF NOT EXISTS pageviews (
   INDEX idx_pageviews_viewed_at (viewed_at)
 );
 
+-- One-time dashboard sign-in codes. The plaintext code is emailed and never stored.
+CREATE TABLE IF NOT EXISTS login_otps (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(120) NOT NULL,
+  code_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  used_at DATETIME NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_otp_email (email),
+  INDEX idx_otp_hash (code_hash),
+  INDEX idx_otp_expires (expires_at)
+);
+
 -- Create indexes for better query performance
 CREATE INDEX idx_email ON enquiries(email);
 CREATE INDEX idx_phone ON enquiries(phone);

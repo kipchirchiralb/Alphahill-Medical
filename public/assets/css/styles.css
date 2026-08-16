@@ -359,25 +359,37 @@ ul {
   display: block;
   width: 26px;
   height: 2px;
+  flex-shrink: 0;
   background: #fff;
   margin: 5px 0;
+  pointer-events: none;
+  transform-origin: 50% 50%;
   transition:
     transform 0.25s ease,
     opacity 0.2s ease;
 }
+/* Open X: flex column + margin:5px 0 (no collapse) puts bar centers
+   12px apart. Button is 44px; group is centered so the middle bar sits
+   on the 22px midpoint. Translate top/bottom by ±12px so both rotate
+   around that shared center. */
+.nav-toggle.is-open span:nth-child(1),
 .nav-toggle[aria-expanded="true"] span:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+  transform: translateY(12px) rotate(45deg);
 }
+.nav-toggle.is-open span:nth-child(2),
 .nav-toggle[aria-expanded="true"] span:nth-child(2) {
   opacity: 0;
+  transform: scaleX(0);
 }
+.nav-toggle.is-open span:nth-child(3),
 .nav-toggle[aria-expanded="true"] span:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+  transform: translateY(-12px) rotate(-45deg);
 }
 
 @media (max-width: 900px) {
   .nav-toggle {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     width: 44px;
@@ -386,8 +398,9 @@ ul {
     min-height: 44px;
     padding: 0;
     position: relative;
-    z-index: 2;
+    z-index: 20;
     order: 3;
+    overflow: visible;
   }
   .nav-actions .btn {
     display: none;
@@ -397,13 +410,16 @@ ul {
     top: 0;
     left: 0;
     right: 0;
+    width: 100%;
+    margin: 0;
     z-index: 1;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
     background: var(--navy-dark);
-    /* pad content clear of the fixed header when open */
-    padding: calc(var(--header-h) + 0.5rem) var(--gutter) 1.5rem;
+    /* vertical inset only — side padding lives on each <a> so
+       borders can run edge-to-edge of the viewport */
+    padding: calc(var(--header-h) + 0.5rem) 0 1.5rem;
     /* translate by the panel's full height so it is always fully hidden,
        regardless of how many items it contains */
     transform: translateY(-100%);
@@ -420,14 +436,27 @@ ul {
     visibility: visible;
     transition: transform 0.3s ease;
   }
+  .nav-links li {
+    width: 100%;
+  }
   .nav-links a {
-    padding: 1.25rem 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    font-size: 1.05rem;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1.15rem var(--gutter);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    color: #fff;
+    font-size: 1.125rem;
+    min-height: 44px;
+  }
+  .nav-links a:hover,
+  .nav-links a:focus-visible {
+    color: #fff;
   }
   .nav-links a[aria-current="page"] {
-    border-bottom-color: rgba(255, 255, 255, 0.08);
-    color: var(--red);
+    border-bottom-color: rgba(255, 255, 255, 0.22);
+    color: #fff;
+    font-weight: 800;
   }
   .nav-links .mobile-cta {
     margin-top: 1rem;
@@ -719,23 +748,6 @@ ul {
 .breadcrumb span {
   color: var(--red);
   padding-inline: 0.4rem;
-}
-
-/* --------------------------------------------------------------------------
-   Emergency ribbon
-   -------------------------------------------------------------------------- */
-.ribbon {
-  background: var(--red);
-  color: #fff;
-  text-align: center;
-  padding-block: 0.65rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  font-size: 0.95rem;
-}
-.ribbon a {
-  color: #fff;
-  text-decoration: underline;
 }
 
 /* --------------------------------------------------------------------------
@@ -1448,7 +1460,7 @@ ul {
   width: 56px;
   height: 56px;
   border-radius: 50%;
-  background: var(--navy);
+  background: #25D366;
   color: #fff;
   display: grid;
   place-items: center;
@@ -1456,7 +1468,7 @@ ul {
 }
 .whatsapp-float:hover,
 .whatsapp-float:focus-visible {
-  background: var(--red);
+  background: #1ebe57;
   color: #fff;
   text-decoration: none;
 }
@@ -1471,10 +1483,17 @@ ul {
   right: 0;
   bottom: 0;
   z-index: 180;
-  background: var(--navy);
   color: #fff;
   padding: 1rem var(--gutter) calc(1rem + env(safe-area-inset-bottom, 0px));
+  background: rgba(0, 31, 93, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 -16px 40px rgba(0, 15, 45, 0.28);
+  transform: translateY(100%);
+  transition: transform 0.45s ease;
+}
+.cookie-banner.is-in {
+  transform: none;
 }
 .cookie-banner[hidden] {
   display: none !important;
@@ -1540,6 +1559,13 @@ html.js .reveal.in {
   }
   .card,
   .service-card {
+    transition: none;
+  }
+  .cookie-banner {
+    transform: none;
+    transition: none;
+  }
+  .nav-toggle span {
     transition: none;
   }
 }
@@ -1979,4 +2005,62 @@ html.js .reveal.in {
 }
 .review-card .stars .off {
   color: var(--line);
+}
+
+/* --------------------------------------------------------------------------
+   Form result popup
+   -------------------------------------------------------------------------- */
+.site-toast {
+  position: fixed;
+  inset: 0;
+  z-index: 400;
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(0, 18, 54, 0.45);
+}
+.site-toast[hidden] {
+  display: none;
+}
+.site-toast__card {
+  width: min(100%, 420px);
+  background: var(--white);
+  color: var(--charcoal);
+  border-radius: 16px;
+  padding: 1.6rem 1.5rem 1.35rem;
+  box-shadow: 0 24px 60px -20px rgba(0, 31, 93, 0.45);
+  text-align: center;
+}
+.site-toast__icon {
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 0.85rem;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.site-toast__icon svg {
+  width: 28px;
+  height: 28px;
+}
+.site-toast__card--success .site-toast__icon {
+  background: #e7f6ed;
+  color: #0f7b43;
+}
+.site-toast__card--error .site-toast__icon {
+  background: #fdecea;
+  color: var(--red);
+}
+.site-toast__card h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.2rem;
+  color: var(--navy);
+}
+.site-toast__card p {
+  margin: 0 0 1.15rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+.site-toast__card .btn {
+  min-width: 7rem;
 }
