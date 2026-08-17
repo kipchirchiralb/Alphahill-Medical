@@ -110,6 +110,7 @@
 <div
   id="cookie-banner"
   class="cookie-banner"
+  hidden
   role="dialog"
   aria-modal="false"
   aria-labelledby="cookie-banner-title"
@@ -159,17 +160,25 @@
     var pathField = document.getElementById("cookie-path");
     if (pathField) pathField.value = window.location.pathname || "/";
     if (!banner) return;
-    var cookies = document.cookie ? document.cookie.split(";") : [];
-    for (var i = 0; i < cookies.length; i++) {
-      if (cookies[i].trim().indexOf("ahmc_consent=") === 0) {
-        banner.hidden = true;
-        return;
+
+    function hasConsentCookie() {
+      var cookies = document.cookie ? document.cookie.split(";") : [];
+      for (var i = 0; i < cookies.length; i++) {
+        if (cookies[i].trim().indexOf("ahmc_consent=") === 0) return true;
       }
+      return false;
     }
-    requestAnimationFrame(function () {
+
+    if (hasConsentCookie()) return;
+
+    window.setTimeout(function () {
+      if (hasConsentCookie()) return;
+      banner.hidden = false;
       requestAnimationFrame(function () {
-        banner.classList.add("is-in");
+        requestAnimationFrame(function () {
+          banner.classList.add("is-in");
+        });
       });
-    });
+    }, 2000);
   })();
 </script>
