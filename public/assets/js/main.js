@@ -405,6 +405,82 @@
           startAutoplay();
         }
       });
+
+      var swipeSurface = document.querySelector(".hero-slider") || heroSection;
+      var swipeStartX = null;
+      var swipeStartY = null;
+      var swipeMoved = false;
+      var swipeThreshold = 36;
+
+      function swipeDelta(touch) {
+        return {
+          dx: touch.clientX - swipeStartX,
+          dy: touch.clientY - swipeStartY,
+        };
+      }
+
+      function endSwipe(dx, dy) {
+        swipeStartX = null;
+        swipeStartY = null;
+        if (Math.abs(dx) >= swipeThreshold && Math.abs(dx) > Math.abs(dy)) {
+          if (dx < 0) nextSlide();
+          else prevSlide();
+        }
+        startAutoplay();
+      }
+
+      swipeSurface.addEventListener(
+        "touchstart",
+        function (e) {
+          if (e.changedTouches.length !== 1) return;
+          swipeStartX = e.changedTouches[0].clientX;
+          swipeStartY = e.changedTouches[0].clientY;
+          swipeMoved = false;
+          stopAutoplay();
+        },
+        { passive: true }
+      );
+
+      swipeSurface.addEventListener(
+        "touchmove",
+        function (e) {
+          if (swipeStartX === null) return;
+          var delta = swipeDelta(e.changedTouches[0]);
+          if (Math.abs(delta.dx) > 8 && Math.abs(delta.dx) > Math.abs(delta.dy)) {
+            swipeMoved = true;
+            if (e.cancelable) e.preventDefault();
+          }
+        },
+        { passive: false }
+      );
+
+      swipeSurface.addEventListener(
+        "touchend",
+        function (e) {
+          if (swipeStartX === null) return;
+          var delta = swipeDelta(e.changedTouches[0]);
+          endSwipe(delta.dx, delta.dy);
+        },
+        { passive: true }
+      );
+
+      swipeSurface.addEventListener("touchcancel", function () {
+        swipeStartX = null;
+        swipeStartY = null;
+        swipeMoved = false;
+        startAutoplay();
+      });
+
+      swipeSurface.addEventListener(
+        "click",
+        function (e) {
+          if (!swipeMoved) return;
+          swipeMoved = false;
+          e.preventDefault();
+          e.stopPropagation();
+        },
+        true
+      );
     }
 
     startAutoplay();
