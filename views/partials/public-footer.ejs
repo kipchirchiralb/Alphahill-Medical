@@ -120,9 +120,10 @@
     <div>
       <h2 id="cookie-banner-title">Cookies on this website</h2>
       <p id="cookie-banner-text">
-        We use a small first-party cookie to count visits after you opt in.
-        We do not use Google Analytics or other advertising trackers.
-        Read our
+        We count page visits anonymously — no cookie, no IP address, no Google
+        Analytics or advertising trackers. With your permission we also store
+        one small first-party cookie, which lets us see how many separate
+        people visit rather than only how many pages are opened. Read our
         <a href="/cookies">Cookies Policy</a>
         and
         <a href="/privacy">Privacy Policy</a>.
@@ -171,14 +172,13 @@
 
     if (hasConsentCookie()) return;
 
-    window.setTimeout(function () {
-      if (hasConsentCookie()) return;
-      banner.hidden = false;
+    // Shown straight away: a delayed banner is missed by anyone who reads one
+    // page and leaves, so the choice is never really offered.
+    banner.hidden = false;
+    requestAnimationFrame(function () {
       requestAnimationFrame(function () {
-        requestAnimationFrame(function () {
-          banner.classList.add("is-in");
-        });
+        banner.classList.add("is-in");
       });
-    }, 2000);
+    });
   })();
 </script>

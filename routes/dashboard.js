@@ -32,7 +32,12 @@ const {
   pagination,
   listHref,
 } = require("../lib/helpers");
-const { loadDashboardStats } = require("../lib/analytics");
+const {
+  loadDashboardStats,
+  loadAnalyticsReport,
+  normalizeRange,
+  REPORT_RANGES,
+} = require("../lib/analytics");
 
 const router = express.Router();
 
@@ -455,17 +460,22 @@ router.get(
 
     recentActivity.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
+    // Zeroes would read as "no traffic" when the real problem is a missing
+    // table or an unreachable database, so the failure is passed to the view.
     let analytics = {
-      uniqueVisits: 0,
       pageviews: 0,
-      weekVisits: 0,
+      uniqueVisitors: 0,
       weekViews: 0,
+      weekVisitors: 0,
+      weekOptInRate: null,
       paths: [],
     };
+    let analyticsError = null;
     try {
       analytics = await loadDashboardStats();
     } catch (error) {
       console.error("analytics stats:", error.message);
+      analyticsError = error.message;
     }
 
     res.render("dashboard/index", {
@@ -478,6 +488,42 @@ router.get(
       recentPosts,
       recentActivity: recentActivity.slice(0, 12),
       analytics,
+      analyticsError,
+    });
+  })
+);
+
+/* --------------------------------------------------------------------------
+   Statistics
+
+   Pageviews are counted for everyone without a cookie. Visitor and visit
+   figures cover only the people who accepted cookies, so the page shows the
+   opt-in rate beside them rather than presenting them as whole-site totals.
+   -------------------------------------------------------------------------- */
+
+router.get(
+  "/analytics",
+  asyncRoute(async (req, res) => {
+    const counts = await loadUnreadCounts();
+    const days = normalizeRange(req.query.days);
+
+    let report = null;
+    let analyticsError = null;
+    try {
+      report = await loadAnalyticsReport(days);
+    } catch (error) {
+      console.error("analytics report:", error.message);
+      analyticsError = error.message;
+    }
+
+    res.render("dashboard/analytics", {
+      title: "Statistics | Alpha Hill Dashboard",
+      active: "analytics",
+      counts,
+      days,
+      ranges: REPORT_RANGES,
+      report,
+      analyticsError,
     });
   })
 );

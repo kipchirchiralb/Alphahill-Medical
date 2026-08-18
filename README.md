@@ -50,7 +50,7 @@ There is no static HTML site anymore. Pages are EJS templates rendered by Expres
 - News CRUD with image upload
 - Review moderation (pending → approved / rejected)
 - Submissions inbox (enquiries, appointments, applications, newsletter) with status and CSV export
-- Unique visits and pageviews (only after cookie consent; never on dashboard pages)
+- Statistics page: cookieless pageview counts, trend chart, top pages, time of day (never counts dashboard pages)
 - Responsive: sidebar drawer + hamburger below 960px
 
 ---
@@ -122,11 +122,11 @@ In production the app sets `trust proxy` so secure cookies work behind Nginx/Cad
 │   ├── auth.js               # Session, CSRF, login throttle
 │   ├── privacy.js            # Dashboard noindex + strict CSP
 │   ├── security.js           # Public security headers
-│   └── analytics.js          # Pageviews after cookie consent
+│   └── analytics.js          # Cookieless pageview recording, bot filter
 ├── lib/
 │   ├── otp.js                # Allowed emails, codes, 2-day session length
 │   ├── mailer.js             # Nodemailer
-│   ├── analytics.js          # Visitor cookies + stats queries
+│   ├── analytics.js          # Consent cookies + stats and report queries
 │   └── helpers.js            # Slugs, dates, CSV, HTML escape
 ├── views/                    # EJS (public pages + views/dashboard/)
 ├── public/                   # CSS, JS, images, robots.txt, sitemap.xml
@@ -197,7 +197,8 @@ Unlisted addresses get the same “if this address is authorised, we sent a code
 
 | Area | Path |
 | --- | --- |
-| Overview (visits, pageviews, recent activity) | `/dashboard` |
+| Overview (headline figures, recent activity) | `/dashboard` |
+| Statistics (trend chart, top pages, time of day; `?days=7\|30\|90\|365`) | `/dashboard/analytics` |
 | News & events (draft / publish, image upload) | `/dashboard/news` |
 | Reviews (approve or reject) | `/dashboard/reviews` |
 | Enquiries, appointments, applications, subscribers | `/dashboard/submissions/:type` |
@@ -222,19 +223,27 @@ mysql -u root -p < schema.sql
 | `subscriptions` | Newsletter |
 | `feedback` | Reviews (`moderation`: pending / approved / rejected) |
 | `news` | Posts from the dashboard |
-| `visitors`, `pageviews` | First-party analytics after consent |
+| `visitors`, `pageviews` | First-party analytics (`pageviews.visitor_id` is NULL unless the visitor opted in) |
 | `login_otps` | Hashed sign-in codes |
 | `sessions` | Staff login sessions |
+
+Databases created before cookieless counting have `pageviews.visitor_id NOT NULL`. Re-running `schema.sql` fixes it, or apply the one statement directly:
+
+```sql
+ALTER TABLE pageviews MODIFY visitor_id CHAR(36) NULL;
+```
 
 ---
 
 ## Privacy and tracking
 
 - No Google Analytics, Facebook Pixel, Hotjar, or similar.
-- Optional first-party cookies: `ahmc_consent` and `ahmc_vid`.
-- Decline: no visitor cookie, no pageviews, banner stays dismissed.
-- Dashboard routes are never counted.
-- IP addresses and User-Agent strings are not stored.
+- Pageviews are counted for everyone with no cookie: each row is a path and a timestamp, nothing else. No consent needed, and nothing that identifies a person is stored.
+- Optional first-party cookies: `ahmc_consent` (choice; 12 months on accept, 3 months on decline) and `ahmc_vid` (random visitor id, only after Accept).
+- Decline: no visitor id, so no unique-visitor or visit figures for that browser. The anonymous page count continues.
+- Never counted: the dashboard, `/api`, static files, non-HTML and non-2xx responses, known crawlers and scripted clients, and browser prefetches.
+- IP addresses and User-Agent strings are not stored. The User-Agent is only tested in memory to filter bots.
+- Unique visitors and visits cover the opted-in subset only. The statistics page shows the opt-in rate beside them so they are not mistaken for whole-site totals.
 
 ---
 

@@ -11,7 +11,7 @@ const {
   parseCookies,
   isUuid,
   applyConsentCookies,
-  recordPageview,
+  touchVisitor,
 } = require("../lib/analytics");
 
 /* --------------------------------------------------------------------------
@@ -345,8 +345,8 @@ router.post(
 /* --------------------------------------------------------------------------
    POST - Cookie consent
 
-   Stores the choice in first-party cookies. Analytics cookies and pageviews
-   are only created when the visitor accepts.
+   Stores the choice in first-party cookies. Pageviews are counted either way;
+   accepting adds the visitor id that turns those counts into people.
    -------------------------------------------------------------------------- */
 
 function wantsJson(req) {
@@ -405,9 +405,11 @@ router.post(
 
     applyConsentCookies(res, choice, visitorId);
 
+    // The page they accepted on was already counted anonymously, so only the
+    // visitor row is created here — recording it again would double-count.
     if (choice === CONSENT_ACCEPTED && visitorId) {
-      recordPageview(visitorId, req.body.path || safeReturnPath(req)).catch((error) => {
-        console.error("analytics pageview:", error.message);
+      touchVisitor(visitorId).catch((error) => {
+        console.error("analytics visitor:", error.message);
       });
     }
 

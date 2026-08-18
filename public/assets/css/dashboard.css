@@ -834,6 +834,110 @@ td .muted,
 }
 
 /* --------------------------------------------------------------------------
+   Statistics
+
+   Charts are plain elements sized with inline heights: no canvas, no charting
+   library and no script, so the dashboard's strict CSP stays intact and the
+   page still prints and scales.
+   -------------------------------------------------------------------------- */
+
+.chart {
+  display: block;
+}
+
+.chart__bars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 180px;
+  padding-bottom: 1px;
+  border-bottom: 1px solid var(--line);
+}
+
+.chart__bar {
+  flex: 1 1 0;
+  min-width: 2px;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 3px 3px 0 0;
+}
+
+.chart__bar:hover {
+  background: #eef1f7;
+}
+
+.chart__bar > span {
+  display: block;
+  width: 100%;
+  min-height: 0;
+  border-radius: 3px 3px 0 0;
+  background: linear-gradient(180deg, var(--navy-soft) 0%, var(--navy) 100%);
+}
+
+.chart__bar:hover > span {
+  background: linear-gradient(180deg, var(--red) 0%, var(--red-dark) 100%);
+}
+
+.chart--hours .chart__bars {
+  height: 130px;
+}
+
+.chart__axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.45rem;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.trend {
+  font-weight: 700;
+}
+
+.trend.is-up {
+  color: var(--green);
+}
+
+.trend.is-down {
+  color: var(--red);
+}
+
+.meter {
+  display: block;
+  width: 100%;
+  min-width: 60px;
+  max-width: 160px;
+  height: 6px;
+  border-radius: 999px;
+  background: #eef1f7;
+  overflow: hidden;
+  margin-bottom: 0.25rem;
+}
+
+.meter > span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--navy-soft);
+}
+
+.notes {
+  margin: 0;
+  padding-left: 1.1rem;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.notes li + li {
+  margin-top: 0.6rem;
+}
+
+.notes strong {
+  color: var(--navy);
+}
+
+/* --------------------------------------------------------------------------
    Forms
    -------------------------------------------------------------------------- */
 

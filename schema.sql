@@ -105,22 +105,28 @@ CREATE TABLE IF NOT EXISTS news (
   INDEX idx_news_status (status, published_at)
 );
 
--- First-party analytics after cookie consent. No IP or User-Agent.
+-- First-party analytics. No IP address and no User-Agent are stored.
+-- One row per visitor who accepted cookies; anonymous pageviews have none.
 CREATE TABLE IF NOT EXISTS visitors (
   id CHAR(36) NOT NULL PRIMARY KEY,
   first_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   last_seen_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
+-- visitor_id is NULL for the cookieless count, which is most rows.
 CREATE TABLE IF NOT EXISTS pageviews (
   id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  visitor_id CHAR(36) NOT NULL,
+  visitor_id CHAR(36) NULL,
   path VARCHAR(255) NOT NULL,
   viewed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_pageviews_visitor (visitor_id),
   INDEX idx_pageviews_path (path),
   INDEX idx_pageviews_viewed_at (viewed_at)
 );
+
+-- Installs created before cookieless counting have visitor_id NOT NULL.
+-- Re-running this on an up-to-date database changes nothing.
+ALTER TABLE pageviews MODIFY visitor_id CHAR(36) NULL;
 
 -- Dashboard OTP codes. Plaintext is emailed and never stored.
 CREATE TABLE IF NOT EXISTS login_otps (

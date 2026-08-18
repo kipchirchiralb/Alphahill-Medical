@@ -1,0 +1,303 @@
+<%- include('partials/head') %>
+<body>
+  <div class="shell">
+    <%- include('partials/sidebar') %>
+
+    <main class="main">
+      <div class="page-head">
+        <div>
+          <h1>Statistics</h1>
+          <p>
+            How the public website is being used. Pageviews are counted for
+            everyone without a cookie; visitor and visit figures cover the
+            people who accepted cookies.
+          </p>
+        </div>
+      </div>
+
+      <%- include('partials/flash') %>
+
+      <% if (analyticsError) { %>
+        <div class="alert alert--error">
+          Statistics could not be loaded. Check the database connection and that
+          the <code>visitors</code> and <code>pageviews</code> tables exist.
+        </div>
+      <% } %>
+
+      <div class="filters" role="group" aria-label="Time range">
+        <% ranges.forEach(function (option) { %>
+          <a
+            href="/dashboard/analytics?days=<%= option %>"
+            class="<%= days === option ? 'is-active' : '' %>"
+          >
+            <%= option === 365 ? 'Last 12 months' : 'Last ' + option + ' days' %>
+          </a>
+        <% }); %>
+      </div>
+
+      <% if (!report) { %>
+        <section class="card" style="margin-top: 1.25rem">
+          <div class="empty">
+            <h3>No statistics available</h3>
+            <p>Nothing could be read from the database for this range.</p>
+          </div>
+        </section>
+      <% } else { %>
+        <%
+          const rangeLabel = days === 365 ? '12 months' : days + ' days';
+
+          const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          function shortDay(value) {
+            const date = value instanceof Date ? value : new Date(value);
+            return date.getDate() + ' ' + MONTHS[date.getMonth()];
+          }
+
+          function trend(value) {
+            if (value === null || value === undefined) return '';
+            if (value > 0) return '+' + value + '%';
+            return value + '%';
+          }
+          function trendClass(value) {
+            if (value === null || value === undefined) return '';
+            if (value > 0) return 'is-up';
+            if (value < 0) return 'is-down';
+            return '';
+          }
+
+          const points = report.chart.points;
+          const maxViews = points.reduce(function (max, point) {
+            return point.views > max ? point.views : max;
+          }, 0);
+          const maxHour = report.hours.reduce(function (max, entry) {
+            return entry.views > max ? entry.views : max;
+          }, 0);
+          function barHeight(value, max) {
+            if (!max || !value) return 0;
+            return Math.max(3, Math.round((value / max) * 100));
+          }
+        %>
+
+        <div class="stat-grid" style="margin-top: 1.25rem">
+          <div class="stat">
+            <p class="stat__label">Pageviews</p>
+            <p class="stat__value"><%= report.range.views %></p>
+            <p class="stat__meta">
+              last <%= rangeLabel %>
+              <% if (report.change.views !== null) { %>
+                · <span class="trend <%= trendClass(report.change.views) %>"><%= trend(report.change.views) %></span>
+                vs previous
+              <% } %>
+            </p>
+          </div>
+
+          <div class="stat">
+            <p class="stat__label">Visits</p>
+            <p class="stat__value"><%= report.range.visits %></p>
+            <p class="stat__meta">
+              opted-in visitors
+              <% if (report.change.visits !== null) { %>
+                · <span class="trend <%= trendClass(report.change.visits) %>"><%= trend(report.change.visits) %></span>
+                vs previous
+              <% } %>
+            </p>
+          </div>
+
+          <div class="stat">
+            <p class="stat__label">Unique visitors</p>
+            <p class="stat__value"><%= report.range.visitors %></p>
+            <p class="stat__meta">
+              opted-in visitors
+              <% if (report.change.visitors !== null) { %>
+                · <span class="trend <%= trendClass(report.change.visitors) %>"><%= trend(report.change.visitors) %></span>
+                vs previous
+              <% } %>
+            </p>
+          </div>
+
+          <div class="stat">
+            <p class="stat__label">Opted in</p>
+            <p class="stat__value">
+              <%= report.range.optInRate === null ? '—' : report.range.optInRate + '%' %>
+            </p>
+            <p class="stat__meta">
+              of pageviews carry a visitor id
+            </p>
+          </div>
+
+          <div class="stat">
+            <p class="stat__label">Pages per visit</p>
+            <p class="stat__value">
+              <%= report.range.viewsPerVisit === null ? '—' : report.range.viewsPerVisit %>
+            </p>
+            <p class="stat__meta">
+              across <%= report.range.paths %> page<%= report.range.paths === 1 ? '' : 's' %>
+            </p>
+          </div>
+        </div>
+
+        <section class="card">
+          <div class="card__head">
+            <h2>
+              Pageviews
+              <% if (report.chart.bucketDays > 1) { %>
+                per <%= report.chart.bucketDays %> days
+              <% } else { %>
+                per day
+              <% } %>
+            </h2>
+            <p class="muted" style="margin: 0; font-size: 0.82rem">
+              Peak <%= maxViews %>
+            </p>
+          </div>
+          <div class="card__body">
+            <% if (maxViews === 0) { %>
+              <div class="empty">
+                <h3>No pageviews in this range</h3>
+                <p>
+                  Counting is automatic on every public page. If this stays at
+                  zero while the site is live, check that the server can write
+                  to the <code>pageviews</code> table.
+                </p>
+              </div>
+            <% } else { %>
+              <div class="chart" role="img"
+                aria-label="Pageviews over the last <%= rangeLabel %>, peak <%= maxViews %>">
+                <div class="chart__bars">
+                  <% points.forEach(function (point) { %>
+                    <div
+                      class="chart__bar"
+                      title="<%= shortDay(point.date) %><%= point.endDate ? ' – ' + shortDay(point.endDate) : '' %>: <%= point.views %> view<%= point.views === 1 ? '' : 's' %>"
+                    >
+                      <span style="height: <%= barHeight(point.views, maxViews) %>%"></span>
+                    </div>
+                  <% }); %>
+                </div>
+                <div class="chart__axis">
+                  <span><%= shortDay(points[0].date) %></span>
+                  <span><%= shortDay(points[points.length - 1].endDate || points[points.length - 1].date) %></span>
+                </div>
+              </div>
+            <% } %>
+          </div>
+        </section>
+
+        <div class="two-col" style="margin-top: 1.25rem">
+          <section class="card">
+            <div class="card__head">
+              <h2>Most visited pages</h2>
+            </div>
+            <% if (report.paths.length === 0) { %>
+              <div class="empty">
+                <h3>Nothing recorded yet</h3>
+                <p>Public pages opened in this range will appear here.</p>
+              </div>
+            <% } else { %>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Path</th>
+                      <th class="nowrap">Views</th>
+                      <th>Share</th>
+                      <th class="nowrap">Opted-in visitors</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% report.paths.forEach(function (row) { %>
+                      <tr>
+                        <td>
+                          <a class="primary-text" href="<%= row.path %>" target="_blank" rel="noopener noreferrer">
+                            <%= row.path %>
+                          </a>
+                        </td>
+                        <td class="nowrap"><%= row.views %></td>
+                        <td>
+                          <div class="meter" aria-hidden="true">
+                            <span style="width: <%= Math.max(2, row.share) %>%"></span>
+                          </div>
+                          <span class="muted" style="font-size: 0.78rem"><%= row.share %>%</span>
+                        </td>
+                        <td class="nowrap"><%= row.visitors %></td>
+                      </tr>
+                    <% }); %>
+                  </tbody>
+                </table>
+              </div>
+            <% } %>
+          </section>
+
+          <section class="card">
+            <div class="card__head">
+              <h2>Time of day</h2>
+            </div>
+            <div class="card__body">
+              <% if (maxHour === 0) { %>
+                <div class="empty">
+                  <h3>No pageviews in this range</h3>
+                  <p>Hourly activity appears once pages are opened.</p>
+                </div>
+              <% } else { %>
+                <div class="chart chart--hours" role="img"
+                  aria-label="Pageviews by hour of day over the last <%= rangeLabel %>">
+                  <div class="chart__bars">
+                    <% report.hours.forEach(function (entry) { %>
+                      <div
+                        class="chart__bar"
+                        title="<%= String(entry.hour).padStart(2, '0') %>:00 – <%= entry.views %> view<%= entry.views === 1 ? '' : 's' %>"
+                      >
+                        <span style="height: <%= barHeight(entry.views, maxHour) %>%"></span>
+                      </div>
+                    <% }); %>
+                  </div>
+                  <div class="chart__axis">
+                    <span>00:00</span>
+                    <span>12:00</span>
+                    <span>23:00</span>
+                  </div>
+                </div>
+                <p class="muted" style="margin: 0.9rem 0 0; font-size: 0.82rem">
+                  Server time. Useful for scheduling posts and knowing when the
+                  site is busiest.
+                </p>
+              <% } %>
+            </div>
+          </section>
+        </div>
+
+        <section class="card" style="margin-top: 1.25rem">
+          <div class="card__head">
+            <h2>How to read these numbers</h2>
+          </div>
+          <div class="card__body">
+            <ul class="notes">
+              <li>
+                <strong>Pageviews</strong> count every public page opened by a
+                real browser. No cookie, no IP address and no User-Agent are
+                stored, so this covers all visitors.
+              </li>
+              <li>
+                <strong>Visits and unique visitors</strong> need the optional
+                cookie, so they only cover people who pressed Accept — currently
+                <%= report.range.optInRate === null ? 'none' : report.range.optInRate + '%' %>
+                of pageviews. Treat them as a sample, not a total. A visit ends
+                after 30 minutes without a new page.
+              </li>
+              <li>
+                Known crawlers, scripts and link previews are filtered out, and
+                the dashboard, forms and images are never counted.
+              </li>
+              <li>
+                All-time: <strong><%= report.allTime.views %></strong> pageviews
+                from <strong><%= report.allTime.visitors %></strong> opted-in
+                visitors<% if (report.allTime.firstViewAt) { %>, first recorded
+                <%= formatDate(report.allTime.firstViewAt) %><% } %>.
+              </li>
+            </ul>
+          </div>
+        </section>
+      <% } %>
+    </main>
+  </div>
+  <script src="/assets/js/dashboard.js"></script>
+</body>
+</html>

@@ -24,22 +24,31 @@
 
       <%- include('partials/flash') %>
 
-      <div class="stat-grid">
-        <div class="stat">
-          <p class="stat__label">Unique visits</p>
-          <p class="stat__value"><%= analytics.uniqueVisits || 0 %></p>
-          <p class="stat__meta">
-            all-time · <%= analytics.weekVisits || 0 %> in the last 7 days
-          </p>
+      <% if (analyticsError) { %>
+        <div class="alert alert--error">
+          Visitor statistics could not be loaded, so the figures below are not
+          reliable. Check the database connection and that the
+          <code>visitors</code> and <code>pageviews</code> tables exist.
         </div>
+      <% } %>
 
-        <div class="stat">
+      <div class="stat-grid">
+        <a class="stat" href="/dashboard/analytics">
           <p class="stat__label">Pageviews</p>
           <p class="stat__value"><%= analytics.pageviews || 0 %></p>
           <p class="stat__meta">
             all-time · <%= analytics.weekViews || 0 %> in the last 7 days
           </p>
-        </div>
+        </a>
+
+        <a class="stat" href="/dashboard/analytics">
+          <p class="stat__label">Unique visitors</p>
+          <p class="stat__value"><%= analytics.weekVisitors || 0 %></p>
+          <p class="stat__meta">
+            last 7 days, opted in<% if (analytics.weekOptInRate !== null && analytics.weekOptInRate !== undefined) { %>
+              · <%= analytics.weekOptInRate %>% of views<% } %>
+          </p>
+        </a>
 
         <a class="stat" href="/dashboard/reviews">
           <p class="stat__label">Reviews awaiting approval</p>
@@ -157,13 +166,16 @@
       <section class="card" style="margin-top: 1.25rem">
         <div class="card__head">
           <h2>Most visited pages</h2>
+          <a class="btn btn--outline btn--sm" href="/dashboard/analytics">
+            Full statistics
+          </a>
         </div>
         <% if (!analytics.paths || analytics.paths.length === 0) { %>
           <div class="empty">
             <h3>No pageviews yet</h3>
             <p>
-              Public visits are counted only after a visitor accepts cookies.
-              The dashboard itself is never recorded.
+              Every public page a visitor opens is counted here, with no cookie
+              needed. The dashboard itself is never recorded.
             </p>
           </div>
         <% } else { %>
@@ -173,7 +185,7 @@
                 <tr>
                   <th>Path</th>
                   <th class="nowrap">Views</th>
-                  <th class="nowrap">Unique visitors</th>
+                  <th class="nowrap">Opted-in visitors</th>
                 </tr>
               </thead>
               <tbody>
