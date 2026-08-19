@@ -751,6 +751,14 @@ ul {
   color: var(--red);
   padding-inline: 0.4rem;
 }
+/* Article pages put the breadcrumb on white rather than in the navy hero,
+   so the on-navy colours above would leave it invisible. */
+.article-head .breadcrumb {
+  color: var(--muted);
+}
+.article-head .breadcrumb a {
+  color: var(--navy);
+}
 
 /* --------------------------------------------------------------------------
    Grids & cards
@@ -838,6 +846,13 @@ ul {
 }
 .card__link:hover {
   gap: 0.75rem;
+}
+/* Inline arrow icons carry a viewBox but no width/height, so without this they
+   fall back to the 300x150 default replaced-element size. */
+.card__link svg {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
 }
 
 /* Service card with image */

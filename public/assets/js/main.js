@@ -493,6 +493,25 @@
     var pathField = document.getElementById("cookie-path");
     if (pathField) pathField.value = window.location.pathname || "/";
 
+    var hasConsentCookie = function () {
+      var cookies = document.cookie ? document.cookie.split(";") : [];
+      for (var i = 0; i < cookies.length; i++) {
+        if (cookies[i].trim().indexOf("ahmc_consent=") === 0) return true;
+      }
+      return false;
+    };
+
+    // Shown straight away: a delayed banner is missed by anyone who reads one
+    // page and leaves, so the choice is never really offered.
+    if (!hasConsentCookie()) {
+      cookieBanner.hidden = false;
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          cookieBanner.classList.add("is-in");
+        });
+      });
+    }
+
     consentForm.addEventListener("submit", function (e) {
       e.preventDefault();
       var submitter = e.submitter;

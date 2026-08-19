@@ -155,30 +155,3 @@
     </form>
   </div>
 </div>
-<script>
-  (function () {
-    var banner = document.getElementById("cookie-banner");
-    var pathField = document.getElementById("cookie-path");
-    if (pathField) pathField.value = window.location.pathname || "/";
-    if (!banner) return;
-
-    function hasConsentCookie() {
-      var cookies = document.cookie ? document.cookie.split(";") : [];
-      for (var i = 0; i < cookies.length; i++) {
-        if (cookies[i].trim().indexOf("ahmc_consent=") === 0) return true;
-      }
-      return false;
-    }
-
-    if (hasConsentCookie()) return;
-
-    // Shown straight away: a delayed banner is missed by anyone who reads one
-    // page and leaves, so the choice is never really offered.
-    banner.hidden = false;
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () {
-        banner.classList.add("is-in");
-      });
-    });
-  })();
-</script>
